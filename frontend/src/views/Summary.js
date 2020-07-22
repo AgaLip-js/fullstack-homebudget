@@ -8,7 +8,7 @@ const Summary = ({ setAuth }) => {
 
   async function getName() {
     try {
-      const response = await fetch("http://localhost:5000/user/dashboard", {
+      const response = await fetch("/user/dashboard", {
         method: "POST",
         headers: { token: localStorage.token },
       });

@@ -4,6 +4,8 @@
   "description": "Fullstack React app for manage the home budget",
   "main": "index.js",
   "scripts": {
+    "build": "cd frontend && npm run build",
+    "install": "cd backend && npm install",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "client": "npm start --prefix frontend",
     "server": "nodemon backend",

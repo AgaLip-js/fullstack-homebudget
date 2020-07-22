@@ -62,6 +62,14 @@ app.post("/user/register", async (req, res) => {
     console.error(err.message);
   }
 });
+app.get("/db", async (req, res) => {
+  try {
+    const db = await pool.query("SELECT * FROM logintable");
+    res.json(db.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 
 app.post("/user/login", async (req, res) => {
   try {

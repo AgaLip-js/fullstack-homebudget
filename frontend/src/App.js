@@ -21,20 +21,33 @@ import Summary from "./views/Summary";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [db, setdb] = useState([]);
   const checkAuthenticated = async () => {
     try {
       const res = await fetch("/authentication/verify", {
         method: "POST",
         headers: { token: localStorage.token },
       });
-      console.log(res.data);
       const parseRes = await res.json();
-
+      console.log(parseRes);
       parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
     } catch (err) {
       console.error(err.message);
     }
   };
+  const getDB = async () => {
+    try {
+      const response = await fetch("/db");
+      const jsonData = await response.json();
+      setdb(jsonData);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getDB();
+  }, []);
 
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);

@@ -1,7 +1,8 @@
 const path = require("path");
-const express = require("express");
-const bodyParser = require("body-parser");
 const pool = require("./database");
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const jwtGenerator = require("./utils/jwtGenerator");
 const bcrypt = require("bcrypt");
@@ -10,14 +11,12 @@ const authorization = require("./middleware/authorization");
 const ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT || 5000;
 
-const app = express();
-
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
-app.use(express.static("frontend/build"));
+// app.use(express.static("frontend/build"));
 if (ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")));
   app.use((req, res) => {

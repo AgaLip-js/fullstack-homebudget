@@ -25,15 +25,9 @@ if (ENV === "production") {
 }
 app.post("/user/register", async (req, res) => {
   try {
-    console.log("USER REGISTER");
     const { login, email, password } = req.body;
-    console.log("Login email password");
-    console.log(login);
-    console.log(email);
-    console.log(password);
     const allUsers = await pool.query("SELECT login, email FROM logintable");
-    console.log("Db pool");
-    console.log(allUsers);
+
     const user = allUsers.rows.filter(
       (el) => el.login === login || el.email === email
     );
@@ -58,14 +52,6 @@ app.post("/user/register", async (req, res) => {
       console.log(res.json({ token }));
       return res.json({ token });
     }
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-app.get("/db", async (req, res) => {
-  try {
-    const db = await pool.query("SELECT * FROM logintable");
-    res.json(db.rows);
   } catch (err) {
     console.error(err.message);
   }

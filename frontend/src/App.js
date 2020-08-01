@@ -35,19 +35,6 @@ function App() {
       console.error(err.message);
     }
   };
-  const getDB = async () => {
-    try {
-      const response = await fetch("/db");
-      const jsonData = await response.json();
-      setdb(jsonData);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
-
-  useEffect(() => {
-    getDB();
-  }, []);
 
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);

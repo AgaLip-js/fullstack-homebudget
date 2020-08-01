@@ -38,6 +38,7 @@ const LoginForm = ({ title, setAuth }) => {
               if (data.token) {
                 localStorage.setItem("token", data.token);
                 setAuth(true);
+                console.log(data.token);
                 toast.success("Logged in Successfully");
               } else {
                 setAuth(false);

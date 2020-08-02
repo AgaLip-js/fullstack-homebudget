@@ -30,36 +30,25 @@ const LoginForm = ({ title, setAuth }) => {
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
           axios
-            .get("/test")
-            .then((res) => {
-              console.log("test response ");
-              console.log(res);
+            .post("/user/login", {
+              email: values.email,
+              password: values.password,
             })
-            .catch((e) => {
-              console.log("Error err");
-              console.log(e);
+            .then(({ data }) => {
+              if (data.token) {
+                localStorage.setItem("token", data.token);
+                setAuth(true);
+                console.log(data.token);
+                toast.success("Logged in Successfully");
+              } else {
+                setAuth(false);
+                toast.error(data);
+              }
+            })
+            .catch((err) => {
+              console.log("error");
+              alert(err);
             });
-
-          // axios
-          //   .post("/user/login", {
-          //     email: values.email,
-          //     password: values.password,
-          //   })
-          //   .then(({ data }) => {
-          //     if (data.token) {
-          //       localStorage.setItem("token", data.token);
-          //       setAuth(true);
-          //       console.log(data.token);
-          //       toast.success("Logged in Successfully");
-          //     } else {
-          //       setAuth(false);
-          //       toast.error(data);
-          //     }
-          //   })
-          //   .catch((err) => {
-          //     console.log("error");
-          //     alert(err);
-          //   });
           setSubmitting(false);
         }, 400);
       }}

@@ -37,6 +37,7 @@ app.use(bodyParser.json());
 if (ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")));
   app.use((req, res) => {
+    console.log("kurwa mać");
     res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
   });
 } else {

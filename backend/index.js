@@ -43,6 +43,12 @@ if (ENV === "production") {
   app.use(express.static("frontend/build"));
 }
 console.log("przed register");
+
+app.get("/test", async (req, res) => {
+  console.log("HELLO HELLO");
+  res.status(200);
+});
+
 app.post("/user/register", async (req, res) => {
   console.log("po register");
   try {

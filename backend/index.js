@@ -34,14 +34,17 @@ app.use(express.urlencoded({ extended: false }));
 // Use the session middleware
 
 app.use(bodyParser.json());
-app.use(express.static("frontend/build"));
 if (ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")));
   app.use((req, res) => {
     res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
   });
+} else {
+  app.use(express.static("frontend/build"));
 }
+console.log("przed register");
 app.post("/user/register", async (req, res) => {
+  console.log("po register");
   try {
     const { login, email, password } = req.body;
     console.log(login, email, password, id);

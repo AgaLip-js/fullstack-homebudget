@@ -53,7 +53,7 @@ app.post("/user/register", async (req, res) => {
   console.log("po register");
   try {
     const { login, email, password } = req.body;
-    console.log(login, email, password, id);
+    console.log(login, email, password);
 
     const allUsers = await pool.query("SELECT login, email FROM logintable");
     console.log(allUsers);
@@ -131,7 +131,7 @@ app.post("/authentication/verify", authorization, (req, res) => {
   }
 });
 
-app.get("/", function (req, res) {
+app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 

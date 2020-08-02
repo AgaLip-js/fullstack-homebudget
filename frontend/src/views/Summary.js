@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import UserPageTemplate from "../templates/UserPageTemplate";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { toast } from "react-toastify";
+import Axios from "axios";
 
 const Summary = ({ setAuth }) => {
   const [name, setName] = useState("");
 
   async function getName() {
     try {
-      const response = await axios.post("/user/dashboard", {
+      const response = await Axios.post("/user/dashboard", {
         token: localStorage.token,
       });
       console.log("reSPONSOREK summary:");

@@ -18,13 +18,14 @@ import Login from "./views/Login";
 import { ToastContainer } from "react-toastify";
 import Register from "./views/Register";
 import Summary from "./views/Summary";
+import Axios from "axios";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [db, setdb] = useState([]);
   const checkAuthenticated = async () => {
     try {
-      const response = await axios.post("/authentication/verify", {
+      const response = await Axios.post("/authentication/verify", {
         token: localStorage.token,
       });
       console.log("reSPONSOREK Guninorek:");

@@ -8,14 +8,23 @@ module.exports = function (req, res, next) {
   const token = req.header("token");
 
   // Check if not token
-  if (!token) {
-    return res.status(403).json({ msg: "authorization denied" });
-  }
 
+  if (typeof token !== "undefined") {
+    // Split at the space
+    const bearer = token.split(" ");
+    // Get token from array
+    const bearerToken = bearer[1];
+    // Set the token
+    req.token = bearerToken;
+    // Next middleware
+    next();
+  } else {
+    res.sendStatus(403);
+  }
   // Verify token
   try {
     //it is going to give use the user id (user:{id: user.id})
-    const verify = jwt.verify(token, process.env.jwtSecret);
+    const verify = jwt.verify(token, "secretkey");
 
     req.user = verify.user;
     next();

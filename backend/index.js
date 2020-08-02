@@ -15,7 +15,9 @@ const initializePassport = require("./passportConfig");
 initializePassport(passport);
 
 const ENV = process.env.NODE_ENV;
+console.log(`ENV ${ENV}`);
 const PORT = process.env.PORT || 5000;
+console.log(`PORT ${PORT}`);
 
 app.use(cors());
 app.use(express.json());
@@ -30,17 +32,6 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(passport.initialize());
 // app.use(passport.session());
 // Use the session middleware
-var MemoryStore = require("memorystore")(session);
-
-app.use(
-  session({
-    cookie: { maxAge: 86400000 },
-    store: new MemoryStore({
-      checkPeriod: 86400000, // prune expired entries every 24h
-    }),
-    secret: "secretkey",
-  })
-);
 
 app.use(bodyParser.json());
 app.use(express.static("frontend/build"));
@@ -53,7 +44,10 @@ if (ENV === "production") {
 app.post("/user/register", async (req, res) => {
   try {
     const { login, email, password } = req.body;
+    console.log(login, email, password, id);
+
     const allUsers = await pool.query("SELECT login, email FROM logintable");
+    console.log(allUsers);
 
     const user = allUsers.rows.filter(
       (el) => el.login === login || el.email === email

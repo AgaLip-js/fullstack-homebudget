@@ -20,8 +20,8 @@ const PORT = process.env.PORT || 5000;
 console.log(`PORT ${PORT}`);
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
 // app.use(
 //   session({
 //     secret: "secret",
@@ -45,8 +45,7 @@ if (ENV === "production") {
 console.log("przed register");
 
 app.get("/test", async (req, res) => {
-  console.log("HELLO HELLO");
-  res.status(200);
+  res.send({ hello: "world" });
 });
 
 app.post("/user/register", async (req, res) => {

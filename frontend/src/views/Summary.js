@@ -20,6 +20,7 @@ const Summary = ({ setAuth }) => {
       console.log("Erorek Guninorek:");
       console.log(e);
     }
+  }
 
   //   try {
   //     const response = await fetch("/user/dashboard", {

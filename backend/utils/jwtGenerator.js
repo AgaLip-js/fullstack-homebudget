@@ -7,10 +7,7 @@ function jwtGenerator(id) {
       id: id,
     },
   };
-  return jwt.sign(payload, 'secretkey', { expiresIn: "1hr" }, (err, token) => {
-    res.json({
-      token
-    }););
+  return jwt.sign(payload, process.env.jwtSecret, { expiresIn: "1hr" });
 }
 
 module.exports = jwtGenerator;

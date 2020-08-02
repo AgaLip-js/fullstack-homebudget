@@ -120,7 +120,9 @@ app.post("/user/dashboard", authorization, async (req, res) => {
 app.post("/authentication/verify", authorization, (req, res) => {
   try {
     res.json(true);
+    console.log("Response verify ok");
   } catch (err) {
+    console.log("Response verify NOT OK");
     console.error(err.message);
     res.status(500).send("Server error");
   }

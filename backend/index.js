@@ -44,7 +44,7 @@ if (ENV === "production") {
 }
 console.log("przed register");
 
-app.get("/test", async (req, res) => {
+app.get("/test", (req, res) => {
   res.send({ hello: "world" });
 });
 

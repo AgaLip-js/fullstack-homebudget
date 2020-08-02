@@ -36,10 +36,10 @@ app.use(cors());
 app.use(bodyParser.json());
 if (ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")));
-  app.use((req, res) => {
-    console.log("kurwa mać");
-    res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
-  });
+  // app.use((req, res) => {
+  //   console.log("kurwa mać");
+  //   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+  // });
 } else {
   app.use(express.static("frontend/build"));
 }
@@ -129,6 +129,10 @@ app.post("/authentication/verify", authorization, (req, res) => {
     console.error(err.message);
     res.status(500).send("Server error");
   }
+});
+
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
 app.listen(PORT, () => {

@@ -9,7 +9,6 @@ const bcrypt = require("bcrypt");
 const authorization = require("./middleware/authorization");
 const passport = require("passport");
 
-const session = require("express-session");
 const initializePassport = require("./passportConfig");
 
 initializePassport(passport);
@@ -20,15 +19,15 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(
+//   session({
+//     secret: "secret",
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use(bodyParser.json());
 app.use(express.static("frontend/build"));

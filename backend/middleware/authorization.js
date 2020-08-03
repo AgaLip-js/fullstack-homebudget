@@ -14,7 +14,7 @@ module.exports = async function (req, res, next) {
   // Check if not token
   if (!token) {
     console.log(`token denied: ${token}`);
-    return res.status(403).json({ msg: "authorization denied" });
+    // return res.status(403).json({ msg: "authorization denied" });
   }
 
   // Verify token

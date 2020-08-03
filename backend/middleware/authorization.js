@@ -3,7 +3,7 @@ require("dotenv").config();
 
 //this middleware will on continue on if the token is inside the local storage
 
-module.exports = function (req, res, next) {
+module.exports = async function (req, res, next) {
   // Get token from header
   console.log(`req auth: ${req}`);
   console.log(`req.header auth: ${req.header("token")}`);
@@ -21,7 +21,7 @@ module.exports = function (req, res, next) {
     const verify = jwt.verify(token, "secret");
     console.log(`verify: ${verify}`);
     console.log(`req.user ${req.user}`);
-    console.log(`verify.user ${varify.user}`);
+    console.log(`verify.user ${verify.user}`);
     req.user = verify.user;
     next();
   } catch (err) {

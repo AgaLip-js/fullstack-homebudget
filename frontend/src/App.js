@@ -24,32 +24,32 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [db, setdb] = useState([]);
   const checkAuthenticated = async () => {
-    try {
-      const response = await Axios.post("/authentication/verify", {
-        token: localStorage.token,
-      });
-      console.log("reSPONSOREK Guninorek:");
+    // try {
+    //     const response = await Axios.post("/authentication/verify", {
+    //       token: localStorage.token,
+    //     });
+    //     console.log("reSPONSOREK Guninorek:");
 
-      console.log(response);
-      console.log(response.data);
-      response === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-    } catch (e) {
-      console.log("Erorek Guninorek:");
-      console.log(e);
+    //     console.log(response);
+    //     console.log(response.data);
+    //     response === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    //   } catch (e) {
+    //     console.log("Erorek Guninorek:");
+    //     console.log(e);
+    //   }
+    // };
+    try {
+      const res = await fetch("/authentication/verify", {
+        method: "POST",
+        headers: { token: localStorage.token },
+      });
+      const parseRes = await res.json();
+      console.log(`parseRes : ${parseRes}`);
+      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    } catch (err) {
+      console.error(err.message);
     }
   };
-  //   try {
-  //     const res = await fetch("/authentication/verify", {
-  //       method: "POST",
-  //       headers: { token: localStorage.token },
-  //     });
-  //     const parseRes = await res.json();
-  //     console.log(parseRes);
-  //     parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // };
 
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);

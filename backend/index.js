@@ -119,10 +119,11 @@ app.post("/user/dashboard", authorization, async (req, res) => {
     res.status(500).json("server Error");
   }
 });
-app.post("/authentication/verify", authorization, (req, res) => {
+app.post("/authentication/verify", authorization, async (req, res) => {
   try {
-    res.json(true);
     console.log("Response verify ok");
+    console.log(`res.json ${res}`);
+    return res.json(true);
   } catch (err) {
     console.log("Response verify NOT OK");
     console.error(err.message);

@@ -28,6 +28,7 @@ const Summary = ({ setAuth }) => {
         method: "POST",
         headers: { token: localStorage.token },
       });
+      console.log(`response: ${response}`);
       const parseRes = await response.json();
       setName(parseRes.login);
       console.log(parseRes);

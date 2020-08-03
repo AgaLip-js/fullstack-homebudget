@@ -112,7 +112,7 @@ app.post("/user/dashboard", authorization, async (req, res) => {
       "SELECT login FROM logintable WHERE id = $1",
       [req.user.id]
     );
-    console.log(`res ${res}`);
+    console.log(`user ${user}`);
     res.json(user.rows[0]);
   } catch (err) {
     console.error(err.message);

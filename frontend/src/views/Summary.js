@@ -16,7 +16,7 @@ const Summary = ({ setAuth }) => {
 
       console.log(response);
       console.log(response.data);
-      setName(response.data.login);
+      setName(response.login);
     } catch (e) {
       console.log("Erorek Guninorek:");
       console.log(e);

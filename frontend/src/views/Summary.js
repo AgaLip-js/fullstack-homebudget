@@ -8,33 +8,33 @@ const Summary = ({ setAuth }) => {
   const [name, setName] = useState("");
 
   async function getName() {
-    try {
-      const response = await Axios.post("/user/dashboard", {
-        token: localStorage.token,
-      });
-      console.log("reSPONSOREK summary:");
+    //   try {
+    //     const response = await Axios.post("/user/dashboard", {
+    //       token: localStorage.token,
+    //     });
+    //     console.log("reSPONSOREK summary:");
 
-      console.log(response);
-      console.log(response.data);
-      setName(response.data.login);
-    } catch (e) {
-      console.log("Erorek Guninorek:");
-      console.log(e);
+    //     console.log(response);
+    //     console.log(response.data);
+    //     setName(response.data.login);
+    //   } catch (e) {
+    //     console.log("Erorek Guninorek:");
+    //     console.log(e);
+    //   }
+    // }
+
+    try {
+      const response = await fetch("/user/dashboard", {
+        method: "POST",
+        headers: { token: localStorage.token },
+      });
+      const parseRes = await response.json();
+      setName(parseRes.login);
+      console.log(parseRes);
+    } catch (err) {
+      console.error(err.message);
     }
   }
-
-  //   try {
-  //     const response = await fetch("/user/dashboard", {
-  //       method: "POST",
-  //       headers: { token: localStorage.token },
-  //     });
-  //     const parseRes = await response.json();
-  //     setName(parseRes.login);
-  //     console.log(parseRes);
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // }
   const logout = async (e) => {
     e.preventDefault();
     try {

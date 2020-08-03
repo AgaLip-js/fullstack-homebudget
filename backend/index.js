@@ -70,12 +70,16 @@ app.post("/user/register", async (req, res) => {
       );
       console.log("New user: ");
       console.log(newUser);
-      res.send(newUser.rows);
-      // res.redirect("/user/login");
       const token = jwtGenerator(newUser.rows[0].id);
-      console.log("Token: " + token);
-      console.log(res.json({ token }));
-      return res.json({ token });
+      const resOb = {
+        ...newUser.rows,
+        token,
+      };
+      res.send(resOb);
+      // // res.redirect("/user/login");
+      // console.log("Token: " + token);
+      // console.log(res.json({ token }));
+      // return res.json({ token });
     }
   } catch (err) {
     console.error(err.message);

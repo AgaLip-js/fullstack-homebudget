@@ -35,17 +35,16 @@ const LoginForm = ({ title, setAuth }) => {
               password: values.password,
             })
             .then((res) => {
-              console.log(res);
               console.log(res.data);
-              // if (data.token) {
-              //   localStorage.setItem("token", data.token);
-              //   setAuth(true);
-              //   console.log(data.token);
-              //   toast.success("Logged in Successfully");
-              // } else {
-              //   setAuth(false);
-              //   toast.error(data);
-              // }
+              console.log(res.data.token);
+              if (res.data.token) {
+                localStorage.setItem("token", res.data.token);
+                setAuth(true);
+                toast.success("Logged in Successfully");
+              } else {
+                setAuth(false);
+                toast.error(data);
+              }
             })
             .catch((err) => {
               console.log("error");

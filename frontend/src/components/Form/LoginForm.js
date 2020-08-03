@@ -43,7 +43,7 @@ const LoginForm = ({ title, setAuth }) => {
                 toast.success("Logged in Successfully");
               } else {
                 setAuth(false);
-                toast.error(data);
+                toast.error(res.data);
               }
             })
             .catch((err) => {

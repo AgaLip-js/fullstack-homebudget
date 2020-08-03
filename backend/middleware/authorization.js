@@ -20,6 +20,8 @@ module.exports = function (req, res, next) {
     //it is going to give use the user id (user:{id: user.id})
     const verify = jwt.verify(token, "secret");
     console.log(`verify: ${verify}`);
+    console.log(`req.user ${req.user}`);
+    console.log(`verify.user ${varify.user}`);
     req.user = verify.user;
     next();
   } catch (err) {

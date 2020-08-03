@@ -59,10 +59,12 @@ const RegisterForm = ({ title }) => {
               password: values.password,
             })
             .then((res) => {
+              console.log(res);
               if (res.data === "User already exist!") {
                 console.log("User exists!");
                 toast.error("User already exist!");
               } else {
+                console.log(res.token);
                 localStorage.setItem("token", res.token);
                 resetForm({});
                 console.log("Register sucessfuly");
@@ -70,7 +72,10 @@ const RegisterForm = ({ title }) => {
                 history.push("/login");
               }
             })
-            .catch((err) => toast.error(err));
+            .catch((err) => {
+              toast.error(err);
+              console.log(err);
+            });
           setSubmitting(false);
         }, 400);
       }}

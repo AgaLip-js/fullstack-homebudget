@@ -34,7 +34,9 @@ const LoginForm = ({ title, setAuth }) => {
               email: values.email,
               password: values.password,
             })
-            .then(({ data }) => {
+            .then((res) => {
+              console.log(res);
+              console.log(res.data);
               if (data.token) {
                 localStorage.setItem("token", data.token);
                 setAuth(true);

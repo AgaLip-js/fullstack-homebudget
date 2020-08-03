@@ -43,11 +43,6 @@ if (ENV === "production") {
 } else {
   app.use(express.static("frontend/build"));
 }
-console.log("przed register");
-
-app.get("/test", (req, res) => {
-  res.send({ hello: "world" });
-});
 
 app.post("/user/register", async (req, res) => {
   console.log("po register");
@@ -76,9 +71,9 @@ app.post("/user/register", async (req, res) => {
       console.log("New user: ");
       console.log(newUser);
       res.send(newUser.rows);
-      res.redirect("/user/login");
+      // res.redirect("/user/login");
       const token = jwtGenerator(newUser.rows[0].id);
-      console.log("Token: ");
+      console.log("Token: " + token);
       console.log(res.json({ token }));
       return res.json({ token });
     }

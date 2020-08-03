@@ -32,7 +32,9 @@ function App() {
 
       console.log(response);
       console.log(response.data);
-      response === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+      response.data === true
+        ? setIsAuthenticated(true)
+        : setIsAuthenticated(false);
     } catch (e) {
       console.log("Erorek Guninorek:");
       console.log(e);

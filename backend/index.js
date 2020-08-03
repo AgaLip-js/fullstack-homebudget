@@ -10,9 +10,9 @@ const authorization = require("./middleware/authorization");
 const passport = require("passport");
 var session = require("express-session");
 
-const initializePassport = require("./passportConfig");
+// const initializePassport = require("./passportConfig");
 
-initializePassport(passport);
+// initializePassport(passport);
 
 const ENV = process.env.NODE_ENV;
 console.log(`ENV ${ENV}`);
@@ -112,7 +112,7 @@ app.post("/user/dashboard", authorization, async (req, res) => {
       "SELECT login FROM logintable WHERE id = $1",
       [req.user.id]
     );
-    console.log(res);
+    console.log(`res ${res}`);
     res.json(user.rows[0]);
   } catch (err) {
     console.error(err.message);

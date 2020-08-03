@@ -9,12 +9,12 @@ module.exports = async function (req, res, next) {
   console.log(`req json: ${req.json}`);
   console.log(req.body.token);
   console.log(`req.header auth: ${req.header("token")}`);
-  const token = req.header("token");
+  const token = req.body.token;
   console.log(`token: ${token}`);
   // Check if not token
   if (!token) {
     console.log(`token denied: ${token}`);
-    // return res.status(403).json({ msg: "authorization denied" });
+    return res.status(403).json({ msg: "authorization denied" });
   }
 
   // Verify token

@@ -10,7 +10,7 @@ const Summary = ({ setAuth }) => {
   async function getName() {
     try {
       const response = await Axios.post("/user/dashboard", {
-        token: localStorage.token,
+        {token: localStorage.token},
       });
       console.log("reSPONSOREK summary:");
 

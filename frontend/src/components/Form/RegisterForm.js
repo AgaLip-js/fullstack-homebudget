@@ -64,8 +64,8 @@ const RegisterForm = ({ title }) => {
                 console.log("User exists!");
                 toast.error("User already exist!");
               } else {
-                console.log(res.token);
-                localStorage.setItem("token", res.token);
+                console.log(res.data.token);
+                localStorage.setItem("token", res.data.token);
                 resetForm({});
                 console.log("Register sucessfuly");
                 toast.success("Register Successfully");

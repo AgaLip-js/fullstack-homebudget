@@ -21,13 +21,13 @@ const StyledLoginImg = styled.img`
   width: 400px;
   margin: 0 50px;
 `;
-const Login = ({ setAuth }) => {
+const Login = () => {
   return (
     <StyledLoginWrapper>
       <Navbar />
       <StyledLoginContent>
         <StyledLoginImg src={img} alt={img} />
-        <LoginForm title="Zaloguj się" setAuth={setAuth} />
+        <LoginForm title="Zaloguj się" />
       </StyledLoginContent>
       <Footer />
     </StyledLoginWrapper>

@@ -5,15 +5,11 @@ require("dotenv").config();
 
 module.exports = async function (req, res, next) {
   // Get token from header
-  console.log(req);
-  console.log(`req json: ${req.json}`);
-  console.log(req.body.token);
-  console.log(`req.header auth: ${req.header("token")}`);
-  const token = req.body.token;
-  console.log(`token: ${token}`);
+
+  const token = req.header("token");
+
   // Check if not token
   if (!token) {
-    console.log(`token denied: ${token}`);
     return res.status(403).json({ msg: "authorization denied" });
   }
 
@@ -21,9 +17,7 @@ module.exports = async function (req, res, next) {
   try {
     //it is going to give use the user id (user:{id: user.id})
     const verify = jwt.verify(token, "secret");
-    console.log(`verify: ${verify}`);
-    console.log(`req.user ${req.user}`);
-    console.log(`verify.user ${verify.user}`);
+
     req.user = verify.user;
     next();
   } catch (err) {

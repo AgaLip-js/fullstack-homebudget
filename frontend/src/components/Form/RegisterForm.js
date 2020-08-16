@@ -1,11 +1,10 @@
 import React from "react";
-import axios from "axios";
 import { Formik } from "formik";
-import history from "../../templates/history";
-import { toast } from "react-toastify";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import styled from "styled-components";
+import { register } from "../../redux/actions/authActions";
+import store from "../../redux/store/store";
 
 const StyledForm = styled.form`
   position: relative;
@@ -50,34 +49,17 @@ const RegisterForm = ({ title }) => {
         }
         return errors;
       }}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
+      onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
-          axios
-            .post("/user/register", {
-              login: values.login,
-              email: values.email,
-              password: values.password,
-            })
-            .then((res) => {
-              console.log(res);
-              if (res.data === "User already exist!") {
-                console.log("User exists!");
-                toast.error("User already exist!");
-              } else {
-                console.log(res.data.token);
-                localStorage.setItem("token", res.data.token);
-                resetForm({});
-                console.log("Register sucessfuly");
-                toast.success("Register Successfully");
-                history.push("/login");
-              }
-            })
-            .catch((err) => {
-              toast.error(err);
-              console.log(err);
-            });
+          const newUser = {
+            login: values.login,
+            email: values.email,
+            password: values.password,
+          };
+
+          store.dispatch(register(newUser));
           setSubmitting(false);
-        }, 400);
+        }, 100);
       }}
     >
       {({

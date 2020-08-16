@@ -1,10 +1,10 @@
 import React from "react";
-import axios from "axios";
 import { Formik } from "formik";
-import { toast } from "react-toastify";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import styled from "styled-components";
+import store from "../../redux/store/store";
+import { login } from "../../redux/actions/authActions";
 
 const StyledForm = styled.form`
   position: relative;
@@ -23,35 +23,18 @@ const StyledFormControl = styled.div`
   margin: 20px 0;
 `;
 
-const LoginForm = ({ title, setAuth }) => {
+const LoginForm = ({ title }) => {
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
       onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          axios
-            .post("/user/login", {
-              email: values.email,
-              password: values.password,
-            })
-            .then((res) => {
-              console.log(res.data);
-              console.log(res.data.token);
-              if (res.data.token) {
-                localStorage.setItem("token", res.data.token);
-                setAuth(true);
-                toast.success("Logged in Successfully");
-              } else {
-                setAuth(false);
-                toast.error(res.data);
-              }
-            })
-            .catch((err) => {
-              console.log("error");
-              alert(err);
-            });
-          setSubmitting(false);
-        }, 400);
+        const user = {
+          email: values.email,
+          password: values.password,
+        };
+
+        store.dispatch(login(user));
+        setSubmitting(false);
       }}
     >
       {({

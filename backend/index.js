@@ -9,6 +9,7 @@ const bcrypt = require("bcrypt");
 const authorization = require("./middleware/authorization");
 const passport = require("passport");
 var session = require("express-session");
+const todos = require("./middleware/todos");
 
 // const initializePassport = require("./passportConfig");
 
@@ -48,19 +49,13 @@ app.post("/user/register", async (req, res) => {
   console.log("po register");
   try {
     const { login, email, password } = req.body;
-    console.log(login, email, password);
-
+    console.log(req.body);
     const allUsers = await pool.query("SELECT login, email FROM logintable");
-    console.log(allUsers);
-
     const user = allUsers.rows.filter(
       (el) => el.login === login || el.email === email
     );
-    console.log(" user: ");
 
-    console.log(user);
     if (user.length > 0) {
-      console.log("USER exists");
       res.json("User already exist!");
     } else {
       let hashedPassword = await bcrypt.hash(password, 10);
@@ -68,15 +63,13 @@ app.post("/user/register", async (req, res) => {
         "INSERT INTO logintable (login, email, password) VALUES ($1, $2, $3) RETURNING *",
         [login, email, hashedPassword]
       );
-      console.log("New user: ");
-      console.log(newUser);
       const token = jwtGenerator(newUser.rows[0].id);
       const resOb = {
         ...newUser.rows,
         token,
       };
       res.send(resOb);
-      // // res.redirect("/user/login");
+      res.redirect("/user/login");
       // console.log("Token: " + token);
       // console.log(res.json({ token }));
       // return res.json({ token });
@@ -93,10 +86,10 @@ app.post("/user/login", async (req, res) => {
       email,
     ]);
     if (user.rows.length === 0) {
-      return res.json("Password or email is incorrect");
+      return res.status(403).send("Password or email is incorrect");
     }
     const validPassword = await bcrypt.compare(password, user.rows[0].password);
-    console.log(validPassword);
+
     if (!validPassword) {
       return res.json("password or Email is incorrect");
     }
@@ -106,31 +99,28 @@ app.post("/user/login", async (req, res) => {
     console.error(err.message);
   }
 });
-app.post("/user/dashboard", authorization, async (req, res) => {
+app.get("/user/dashboard", authorization, async (req, res) => {
   try {
     const user = await pool.query(
       "SELECT login FROM logintable WHERE id = $1",
       [req.user.id]
     );
-    console.log(`user ${user}`);
+    console.log(user.rows[0]);
     res.json(user.rows[0]);
   } catch (err) {
     console.error(err.message);
     res.status(500).json("server Error");
   }
 });
-app.post("/authentication/verify", authorization, async (req, res) => {
-  try {
-    console.log("Response verify ok");
-    console.log(`res.json ${res}`);
-    return res.json(true);
-  } catch (err) {
-    console.log("Response verify NOT OK");
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
+// app.post("/authentication/verify", authorization, async (req, res) => {
+//   try {
+//     return res.json(true);
+//   } catch (err) {
+//     res.status(500).send("Server error");
+//   }
+// });
 
+app.use("/", todos);
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });

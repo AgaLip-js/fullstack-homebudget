@@ -4,12 +4,8 @@ import styled from "styled-components";
 import logoIcon from "../../assets/pictures/BUDŻETOMAT3.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
-
-const backgroundTheme = {
-  summary: "#1383c5",
-  analysis: "#1383c5",
-  planning: "white",
-};
+import store from "../../redux/store/store";
+import { logoutUser } from "../../redux/actions/authActions";
 
 const StyledWrapper = styled.nav`
   position: fixed;
@@ -62,37 +58,42 @@ const StyledSection = styled(NavLink)`
   }
 `;
 
-const Sidebar = ({ setAuth, logout }) => (
-  <StyledWrapper>
-    <StyledLogoLink to="/" />
-    <StyledLinksList>
-      <li>
-        <StyledSection to="/dashboard/summary" activeClassName="active">
-          Podsumowanie
-        </StyledSection>
-      </li>
-      <li>
-        <StyledSection
-          as={NavLink}
-          to="/dashboard/analysis"
-          activeclass="active"
-        >
-          Analiza Wydatków
-        </StyledSection>
-      </li>
-      <li>
-        <StyledSection
-          as={NavLink}
-          to="/dashboard/planning"
-          activeclass="active"
-        >
-          Planowanie Budżetu
-        </StyledSection>
-        <StyledLogout to="/login" onClick={(e) => logout(e)}>
-          <FontAwesomeIcon icon={faSignOutAlt} alt={"Wyloguj Się"} />
-        </StyledLogout>
-      </li>
-    </StyledLinksList>
-  </StyledWrapper>
-);
+const Sidebar = () => {
+  const logoutFn = () => {
+    store.dispatch(logoutUser());
+  };
+  return (
+    <StyledWrapper>
+      <StyledLogoLink to="/" />
+      <StyledLinksList>
+        <li>
+          <StyledSection to="/dashboard/summary" activeClassName="active">
+            Podsumowanie
+          </StyledSection>
+        </li>
+        <li>
+          <StyledSection
+            as={NavLink}
+            to="/dashboard/analysis"
+            activeclass="active"
+          >
+            Analiza Wydatków
+          </StyledSection>
+        </li>
+        <li>
+          <StyledSection
+            as={NavLink}
+            to="/dashboard/planning"
+            activeclass="active"
+          >
+            Planowanie Budżetu
+          </StyledSection>
+          <StyledLogout to="/login" onClick={logoutFn}>
+            <FontAwesomeIcon icon={faSignOutAlt} alt={"Wyloguj Się"} />
+          </StyledLogout>
+        </li>
+      </StyledLinksList>
+    </StyledWrapper>
+  );
+};
 export default Sidebar;

@@ -20,6 +20,7 @@ import Register from "./views/Register";
 import Summary from "./views/Summary";
 import { loadUser } from "./redux/actions/authActions";
 import store from "./redux/store/store";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { auth } = useSelector((store) => ({
@@ -36,7 +37,7 @@ function App() {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <ToastContainer />
+          <ToastContainer autoClose={2000} />
           <Switch>
             <Router history={history}>
               <Route

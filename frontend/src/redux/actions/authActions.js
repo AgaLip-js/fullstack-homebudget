@@ -12,6 +12,7 @@ import {
 import { returnErrors } from "./errorActions";
 import setAuthToken from "../utils/setAuthToken";
 import history from "../../templates/history";
+import { toast } from "react-toastify";
 
 // check token & load user
 export const loadUser = () => (dispatch, getState) => {
@@ -40,13 +41,14 @@ export const register = (userData) => (dispatch) => {
     .then((res) => {
       console.log(res);
       if (res.data === "User already exist!") {
-        console.log("User exists!");
+        toast.error("Użytkownik już istnieje!")
       } else {
         dispatch({
           type: REGISTER_SUCCESS,
           payload: res.data,
         });
         history.push("/login");
+        toast.success("Pomyślnie zarejestrowano")
       }
     })
     .catch((err) => {
@@ -56,6 +58,7 @@ export const register = (userData) => (dispatch) => {
       dispatch({
         type: REGISTER_FAIL,
       });
+      toast.error("Błąd przy rejestracji")
     });
 };
 
@@ -67,15 +70,16 @@ export const login = (user) => (dispatch) => {
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
+      toast.success("Pomyślnie zalogowano")
     })
-
     .catch((err) => {
       dispatch(
-        returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
+        returnErrors(err.response.data, err.response.status, "LOGIN_FAIL"),
       );
       dispatch({
         type: LOGIN_FAIL,
       });
+      toast.error("Nieprawidłowy email lub hasło")
     });
 };
 
@@ -109,4 +113,5 @@ export const logoutUser = () => (dispatch) => {
   setAuthToken(false);
   // Set current user to {} which will set isAuthenticated to false
   dispatch(setCurrentUser({}));
+  toast.success("Pomyślnie wylogowano");
 };

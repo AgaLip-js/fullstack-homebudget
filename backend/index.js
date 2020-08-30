@@ -87,14 +87,12 @@ app.post("/user/login", async (req, res) => {
     const user = await pool.query("SELECT * FROM logintable WHERE email=$1", [
       email,
     ]);
-    if (user.rows.length === 0) {
+    const validPassword = await bcrypt.compare(password, user.rows[0].password);
+    if (user.rows.length === 0 || !validPassword) {
       return res.status(403).send("Password or email is incorrect");
     }
-    const validPassword = await bcrypt.compare(password, user.rows[0].password);
+   
 
-    if (!validPassword) {
-      return res.json("password or Email is incorrect");
-    }
     const token = jwtGenerator(user.rows[0].id);
     res.json({ token });
   } catch (err) {
@@ -104,7 +102,7 @@ app.post("/user/login", async (req, res) => {
 app.get("/user/dashboard", authorization, async (req, res) => {
   try {
     const user = await pool.query(
-      "SELECT login FROM logintable WHERE id = $1",
+      "SELECT login, id FROM logintable WHERE id = $1",
       [req.user.id]
     );
     console.log(user.rows[0]);

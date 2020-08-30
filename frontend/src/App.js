@@ -6,7 +6,7 @@ import {
   Redirect,
   Router,
 } from "react-router-dom";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useSelector, useDispatch } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./theme/GlobalStyle";
 import { theme } from "./theme/MainTheme";
@@ -21,62 +21,41 @@ import Summary from "./views/Summary";
 import { loadUser } from "./redux/actions/authActions";
 import store from "./redux/store/store";
 import "react-toastify/dist/ReactToastify.css";
+import Analysis from "./views/Analysis";
+import Planning from "./views/Planning";
+import UserPanel from "./views/UserPanel";
+import Sidebar from "./components/Sidebar/Sidebar";
+import LoginForm from "./components/Form/LoginForm";
+import { PrivateRoute } from "./templates/PrivateRoute/PrivateRoute";
 
 function App() {
   const { auth } = useSelector((store) => ({
     auth: store.auth,
   }));
+const dispatch = useDispatch()
 
   useEffect(() => {
-    store.dispatch(loadUser());
+    dispatch(loadUser());
     Aos.init({ duration: 1500, once: true });
-  }, []);
-
+  }, [auth.token]);
   return (
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <ToastContainer autoClose={2000} />
-          <Switch>
-            <Router history={history}>
-              <Route
-                exact
-                path="/"
-                render={() =>
-                  !auth.isAuthenticated ? (
-                    <LandingPage />
-                  ) : (
-                    <Redirect to="/dashboard/summary" />
-                  )
-                }
-              />
-              <Route
-                exact
-                path="/login"
-                render={() =>
-                  !auth.isAuthenticated ? (
-                    <Login />
-                  ) : (
-                    <Redirect to="/dashboard/summary" />
-                  )
-                }
-              />
-              <Route
-                exact
-                path="/register"
-                component={Register}
-                render={() => <Redirect to="/login" />}
-              />
-              <Route
-                exact
-                path="/dashboard/summary"
-                render={() =>
-                  auth.isAuthenticated ? <Summary /> : <Redirect to="/login" />
-                }
-              />
-            </Router>
-          </Switch>
+          <Router history={history}>
+            <Switch>
+              <Route exact path="/" component={LandingPage} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+              <PrivateRoute exact path="/dashboard/summary" component={Summary} />
+              <PrivateRoute exact path="/dashboard/analysis" component={Analysis} />
+              <PrivateRoute exact path="/dashboard/planning" component={Planning} />
+              <PrivateRoute exact path="/dashboard/userpanel" component={UserPanel} />
+              <Redirect from="*" to="/" />
+            </Switch>
+          </Router>
         </BrowserRouter>
       </ThemeProvider>
     </>

@@ -8,6 +8,7 @@ import {
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
+  CLEAR_STATE
 } from "./";
 import { returnErrors } from "./errorActions";
 import setAuthToken from "../utils/setAuthToken";
@@ -70,6 +71,7 @@ export const login = (user) => (dispatch) => {
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
+      
       toast.success("Pomyślnie zalogowano")
     })
     .catch((err) => {
@@ -101,9 +103,14 @@ export const tokenConfig = (getState) => {
 
   return config;
 };
-export const setCurrentUser = (decoded) => {
+export const setCurrentUser = () => {
   return {
     type: LOGOUT_SUCCESS,
+  };
+};
+export const clearData = () => {
+  return {
+    type: CLEAR_STATE,
   };
 };
 export const logoutUser = () => (dispatch) => {
@@ -113,5 +120,6 @@ export const logoutUser = () => (dispatch) => {
   setAuthToken(false);
   // Set current user to {} which will set isAuthenticated to false
   dispatch(setCurrentUser({}));
+  dispatch(clearData({}));
   toast.success("Pomyślnie wylogowano");
 };

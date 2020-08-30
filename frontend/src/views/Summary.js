@@ -9,6 +9,10 @@ import { loadUser } from "../redux/actions/authActions";
 import { addItem, selectTodo, deleteTodo } from "../redux/actions/itemsActions";
 
 
+const StyledWelcomeTitle = styled.h2`
+text-align: center;
+`
+
 const StyledForm = styled.form``;
 const StyledInput = styled.input``;
 
@@ -45,72 +49,20 @@ const Summary = () => {
   }));
   const dispatch = useDispatch();
   const [description, setDescription] = useState("");
-  // const [todos, setTodos] = useState([]);
 
-  // const onSubmitForm = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const body = {
-  //       description: description,
-  //       user_id: auth.user.id
-  //     }
-  //     const response = await fetch("/todos", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(body),
-  //     });
-  //     window.location = "/";
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // };
   const onSubmitForm = (e) => {
     e.preventDefault();
     store.dispatch(addItem(description, auth.user.id));
     setDescription("");
   }
 
-
-  // const deleteTodo = async (id) => {
-  //   try {
-  //     const deleteTodo = await fetch(`/todos/${id}`, {
-  //       method: "DELETE",
-  //     });
-      
-  //     // setTodos(todos.filter((todo) => todo.id !== id));
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // };
-
-
-  // const selectTodo = async (user_id) => {
-  //   try {
-  //     const response = await fetch(`/todos/${user_id}`, {
-  //       method:"GET",
-  //       headers: { "Content-Type": "application/json" }
-  //     });
-  //     const jsonData = await response.json();
-  //     setTodos(jsonData);
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // };
-  console.log("todos summary: ")
- console.log(todos)
-
-  useEffect(() => {
-    store.dispatch(loadUser());
-    store.dispatch(selectTodo(auth.user.id))
-    // selectTodo(auth.user.id);
-  }, [auth.user.id]);
+  // useEffect(() => {
+  //   store.dispatch(selectTodo(auth.user.id))
+  // }, [auth.user.id, items.isLoading]);
 
   return (
     <>
-      <Sidebar />
       <UserPageTemplate pageContext="summary">
-        {auth.user.login && <h2>Welcome {auth.user.login}{auth.user.id}</h2>}
-
         <StyledForm onSubmit={onSubmitForm}>
           <StyledInput
             value={description}
@@ -141,11 +93,12 @@ const Summary = () => {
                   </td>
                 </StyledTr>
               ))}
-
+            
           </StyledTBody>
         </StyledTable>
       </UserPageTemplate>
-    </>
+
+  </>
   );
 };
 

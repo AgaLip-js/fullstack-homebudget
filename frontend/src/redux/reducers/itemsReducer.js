@@ -4,21 +4,22 @@ CLOSE_MODAL,
 ADD_ITEM,
 EDIT_ITEM,
 REMOVE_ITEM,
-LOADING_ITEM
+LOADING_ITEM,
+CLEAR_STATE
 } from "../actions";
 
 const initialState = {
     open: false,
     todos: [],
     todo: "",
-    isLoading: false,
+    isLoading: true,
   };
   const itemsReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOADING_ITEM:
             return {
               ...state,
-              isLoading: true,
+              isLoading: false,
               todos: action.payload.todos,
             };
         case OPEN_MODAL: {
@@ -60,6 +61,9 @@ const initialState = {
                 }
               }),
             };
+          }
+          case CLEAR_STATE :{
+            return initialState;
           }
           default:
             return state;

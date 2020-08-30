@@ -4,6 +4,8 @@ import Footer from "../components/Footer/Footer";
 import Navbar from "../components/Navbar/Navbar";
 import LoginForm from "../components/Form/LoginForm";
 import styled from "styled-components";
+import { Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const StyledLoginWrapper = styled.div`
   position: relative;
@@ -22,6 +24,15 @@ const StyledLoginImg = styled.img`
   margin: 0 50px;
 `;
 const Login = () => {
+
+  const { auth } = useSelector((store) => ({
+    auth: store.auth,
+  }));
+
+  if(auth.isAuthenticated){
+    return <Redirect to="/dashboard/summary"/>
+  }
+
   return (
     <StyledLoginWrapper>
       <Navbar />

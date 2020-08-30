@@ -7,6 +7,8 @@ import img5 from "../assets/pictures/undraw_dashboard.svg";
 import Footer from "../components/Footer/Footer";
 import Navbar from "../components/Navbar/Navbar";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 const StyledWrapper = styled.div`
   position: relative;
@@ -75,57 +77,65 @@ const StyledThirdText = styled.p`
 `;
 
 const LandingPage = () => {
-  return (
-    <StyledWrapper>
-      <Navbar aos="fade-down" />
-      <StyledFirstContainer data-aos="fade-up">
-        <StyledFirstText>
-          Zdobądź pełną kontrolę nad Twoimi pieniędzmi
-        </StyledFirstText>
-        <StyledImg src={img1} alt={img1} />
-      </StyledFirstContainer>
-      <StyledSecondContainer data-aos="fade-down">
-        <StyledImg src={img2} alt={img2} />
-        <StyledSecondText>
-          Aplikacja do zarządzania domowym budżetem pozwoli Ci w pełni
-          kontrolować twoje wydatki. Nawet nie wiesz ile można zaoszczędzić!
-        </StyledSecondText>
-      </StyledSecondContainer>
-      <StyledThirdContainer data-aos="fade-down">
-        <StyledImg2 src={img4} alt={img4} />
-        <StyledImg2 src={img5} alt={img5} />
-        <StyledImg2 src={img3} alt={img3} />
-        <StyledSection>
-          <StyledDiv>
-            <StyledHeaderTitle>Podsumowanie</StyledHeaderTitle>
-            <StyledThirdText>
-              Twój rzeczywisty stan finansów, przedstawiający sumę przychodów i
-              wydatków.
-            </StyledThirdText>
-          </StyledDiv>
-        </StyledSection>
-        <StyledSection>
-          <StyledDiv>
-            <StyledHeaderTitle>Analiza wydatków</StyledHeaderTitle>
-            <StyledThirdText>
-              Raporty przedstawiające bilans na dany dzień. Dodawaj swoje
-              wydatki i porównuj z zaplanowanym budżetem.
-            </StyledThirdText>
-          </StyledDiv>
-        </StyledSection>
-        <StyledSection>
-          <StyledDiv>
-            <StyledHeaderTitle>Planowanie budżetu</StyledHeaderTitle>
-            <StyledThirdText>
-              Zaplanuj swój budżet i miej większą kontrolę nad własnymi
-              finansami.
-            </StyledThirdText>
-          </StyledDiv>
-        </StyledSection>
-      </StyledThirdContainer>
-      <Footer />
-    </StyledWrapper>
-  );
+  const { auth } = useSelector((store) => ({
+    auth: store.auth,
+  }));
+
+  if(auth.isAuthenticated){
+    return <Redirect to="/dashboard/summary"/>
+  } 
+    return (
+      <StyledWrapper>
+        <Navbar aos="fade-down" />
+        <StyledFirstContainer data-aos="fade-up">
+          <StyledFirstText>
+            Zdobądź pełną kontrolę nad Twoimi pieniędzmi
+          </StyledFirstText>
+          <StyledImg src={img1} alt={img1} />
+        </StyledFirstContainer>
+        <StyledSecondContainer data-aos="fade-down">
+          <StyledImg src={img2} alt={img2} />
+          <StyledSecondText>
+            Aplikacja do zarządzania domowym budżetem pozwoli Ci w pełni
+            kontrolować twoje wydatki. Nawet nie wiesz ile można zaoszczędzić!
+          </StyledSecondText>
+        </StyledSecondContainer>
+        <StyledThirdContainer data-aos="fade-down">
+          <StyledImg2 src={img4} alt={img4} />
+          <StyledImg2 src={img5} alt={img5} />
+          <StyledImg2 src={img3} alt={img3} />
+          <StyledSection>
+            <StyledDiv>
+              <StyledHeaderTitle>Podsumowanie</StyledHeaderTitle>
+              <StyledThirdText>
+                Twój rzeczywisty stan finansów, przedstawiający sumę przychodów i
+                wydatków.
+              </StyledThirdText>
+            </StyledDiv>
+          </StyledSection>
+          <StyledSection>
+            <StyledDiv>
+              <StyledHeaderTitle>Analiza wydatków</StyledHeaderTitle>
+              <StyledThirdText>
+                Raporty przedstawiające bilans na dany dzień. Dodawaj swoje
+                wydatki i porównuj z zaplanowanym budżetem.
+              </StyledThirdText>
+            </StyledDiv>
+          </StyledSection>
+          <StyledSection>
+            <StyledDiv>
+              <StyledHeaderTitle>Planowanie budżetu</StyledHeaderTitle>
+              <StyledThirdText>
+                Zaplanuj swój budżet i miej większą kontrolę nad własnymi
+                finansami.
+              </StyledThirdText>
+            </StyledDiv>
+          </StyledSection>
+        </StyledThirdContainer>
+        <Footer />
+      </StyledWrapper>
+    );
+  
 };
 
 export default LandingPage;

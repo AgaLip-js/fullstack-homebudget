@@ -7,12 +7,13 @@ import {
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
+  CLEAR_STATE,
 } from "../actions";
 
 const initialState = {
   token: localStorage.getItem("token"),
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true,
   user: {},
 };
 

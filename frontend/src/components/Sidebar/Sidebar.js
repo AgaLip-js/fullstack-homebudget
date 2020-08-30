@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import logoIcon from "../../assets/pictures/BUDŻETOMAT3.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import store from "../../redux/store/store";
 import { logoutUser } from "../../redux/actions/authActions";
 
@@ -67,7 +67,7 @@ const Sidebar = () => {
       <StyledLogoLink to="/" />
       <StyledLinksList>
         <li>
-          <StyledSection to="/dashboard/summary" activeClassName="active">
+          <StyledSection as={NavLink} to="/dashboard/summary" activeClassName="active">
             Podsumowanie
           </StyledSection>
         </li>
@@ -75,7 +75,7 @@ const Sidebar = () => {
           <StyledSection
             as={NavLink}
             to="/dashboard/analysis"
-            activeclass="active"
+            activeClassName="active"
           >
             Analiza Wydatków
           </StyledSection>
@@ -84,9 +84,12 @@ const Sidebar = () => {
           <StyledSection
             as={NavLink}
             to="/dashboard/planning"
-            activeclass="active"
+            activeClassName="active"
           >
             Planowanie Budżetu
+          </StyledSection>
+          <StyledSection as={NavLink} to="/dashboard/userpanel" activeclass="active" >
+            <FontAwesomeIcon icon={faUserAlt} alt="Panel użytkownika"/>
           </StyledSection>
           <StyledLogout to="/login" onClick={logoutFn}>
             <FontAwesomeIcon icon={faSignOutAlt} alt={"Wyloguj Się"} />

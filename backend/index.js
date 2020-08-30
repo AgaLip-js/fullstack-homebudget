@@ -92,7 +92,6 @@ app.post("/user/login", async (req, res) => {
       return res.status(403).send("Password or email is incorrect");
     }
    
-
     const token = jwtGenerator(user.rows[0].id);
     res.json({ token });
   } catch (err) {

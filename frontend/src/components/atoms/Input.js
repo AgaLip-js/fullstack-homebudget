@@ -5,7 +5,7 @@ const StyledInput = styled.input`
   outline: none;
   display: block;
   background: ${({ theme }) => theme.lightcolor};
-  width: 100%;
+  width: ${({ props }) => (props ? "fit-content" : "100%")};
   border: 0;
   border-radius: 4px;
   box-sizing: border-box;
@@ -19,7 +19,8 @@ const StyledInput = styled.input`
 `;
 const StyledLabel = styled.label`
   display: block;
-  margin: 10px;
+  margin-bottom: 25px;
+  margin-top: 5px;
   color: ${({ theme }) => theme.blackcolor};
   font-size: ${({ theme }) => theme.fontSize.xxs};
   font-weight: ${({ theme }) => theme.font500};
@@ -27,19 +28,75 @@ const StyledLabel = styled.label`
   text-transform: uppercase;
   letter-spacing: 0.2em;
 `;
+const StyledDataList = styled.datalist``;
+const StyledOption = styled.option``;
 
-const Input = ({ type, name, id, onChange, onBlur, value, title }) => {
+const Input = ({
+  type,
+  name,
+  id,
+  onChange,
+  onBlur,
+  value,
+  title,
+  secondary,
+  list,
+  newAccounts,
+  newExpenses,
+  category,
+  option,
+}) => {
   return (
     <>
-      <StyledInput
-        type={type}
-        name={name}
-        id={id}
-        onChange={onChange}
-        onBlur={onBlur}
-        value={value}
-      />
-      <StyledLabel htmlFor={id}>{title}</StyledLabel>
+      {list ? (
+        <>
+          <StyledInput
+            type={type}
+            name={name}
+            id={id}
+            onChange={onChange}
+            onBlur={onBlur}
+            value={value}
+            props={secondary}
+            list={list}
+            autocomplete="off"
+          />
+          {newExpenses ? (
+            <StyledDataList id={list}>
+              {newExpenses.map((acc) =>
+                acc.category === category ? (
+                  <StyledOption
+                    value={acc.groupCategory}
+                    name="groupCategory"
+                  ></StyledOption>
+                ) : (
+                  <StyledOption value={acc[option]}></StyledOption>
+                )
+              )}
+            </StyledDataList>
+          ) : (
+            <StyledDataList id={list}>
+              {newAccounts.map((acc) => (
+                <StyledOption value={acc[name]}></StyledOption>
+              ))}
+            </StyledDataList>
+          )}
+          <StyledLabel htmlFor={id}>{title}</StyledLabel>
+        </>
+      ) : (
+        <>
+          <StyledInput
+            type={type}
+            name={name}
+            id={id}
+            onChange={onChange}
+            onBlur={onBlur}
+            value={value}
+            props={secondary}
+          />
+          <StyledLabel htmlFor={id}>{title}</StyledLabel>
+        </>
+      )}
     </>
   );
 };

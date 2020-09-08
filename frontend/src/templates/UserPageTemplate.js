@@ -13,7 +13,8 @@ const StyledWrapper = styled.div`
   height: 100vh;
   background: ${({ pageContext }) =>
     pageContext ? backgroundTheme[pageContext] : backgroundTheme.summary};
-  padding-top: 100px;
+  padding-top: 80px;
+  position:relative;
 `;
 
 const UserPageTemplate = ({ children, pageContext }) => {

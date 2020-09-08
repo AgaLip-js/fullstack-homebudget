@@ -6,8 +6,8 @@ import { loadUser } from "../../redux/actions/authActions";
 import { selectTodo } from "../../redux/actions/itemsActions";
 import store from "../../redux/store/store";
 
-const getComponentByState = (Component, authState, props) => {
-    if(authState.isLoading){
+const getComponentByState = (Component, authState, items, props) => {
+    if(authState.isLoading || items.isLoading){
         return <p>...Loading</p>
     }
     else if(!authState.isLoading && authState.isAuthenticated){
@@ -28,8 +28,13 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
   const { auth } = useSelector((store) => ({
     auth: store.auth,
   }));
+  const { items } = useSelector((store) => ({
+    items: store.items,
+  }));
 useEffect(() => {
-    dispatch(selectTodo(auth.user.id))
+  setTimeout(() => {
+    dispatch(selectTodo(auth.user.id));
+  }, 100);
 }, [auth.user.id])
 
 
@@ -37,7 +42,7 @@ useEffect(() => {
     <Route
       {...rest}
       render={(props) =>
-        getComponentByState(Component, auth, props)
+        getComponentByState(Component, auth, items, props)
       }
     />
   );

@@ -56,9 +56,6 @@ const Summary = () => {
     setDescription("");
   }
 
-  // useEffect(() => {
-  //   store.dispatch(selectTodo(auth.user.id))
-  // }, [auth.user.id, items.isLoading]);
 
   return (
     <>

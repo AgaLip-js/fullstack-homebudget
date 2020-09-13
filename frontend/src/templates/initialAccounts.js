@@ -7,6 +7,7 @@ export const initialAccounts = [
     title: "Portfel Arka",
     category: "Portfel",
     quantity: 2500,
+    type: "Środki bieżące",
   },
   {
     id: "2",
@@ -15,6 +16,7 @@ export const initialAccounts = [
     title: "Konto Guniny",
     category: "Konto oszczędnościowe",
     quantity: 5500,
+    type: "Oszczędności",
   },
   {
     id: "3",
@@ -23,5 +25,6 @@ export const initialAccounts = [
     title: "Portfel Guniny",
     category: "Portfel",
     quantity: 1500,
+    type: "Środki bieżące",
   },
 ];

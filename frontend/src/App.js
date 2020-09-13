@@ -24,15 +24,13 @@ import "react-toastify/dist/ReactToastify.css";
 import Analysis from "./views/Analysis";
 import Planning from "./views/Planning";
 import UserPanel from "./views/UserPanel";
-import Sidebar from "./components/Sidebar/Sidebar";
-import LoginForm from "./components/Form/LoginForm";
 import { PrivateRoute } from "./templates/PrivateRoute/PrivateRoute";
 
 function App() {
   const { auth } = useSelector((store) => ({
     auth: store.auth,
   }));
-const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(loadUser());
@@ -49,10 +47,26 @@ const dispatch = useDispatch()
               <Route exact path="/" component={LandingPage} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
-              <PrivateRoute exact path="/dashboard/summary" component={Summary} />
-              <PrivateRoute exact path="/dashboard/analysis" component={Analysis} />
-              <PrivateRoute exact path="/dashboard/planning" component={Planning} />
-              <PrivateRoute exact path="/dashboard/userpanel" component={UserPanel} />
+              <PrivateRoute
+                exact
+                path="/dashboard/summary"
+                component={Summary}
+              />
+              <PrivateRoute
+                exact
+                path="/dashboard/analysis"
+                component={Analysis}
+              />
+              <PrivateRoute
+                exact
+                path="/dashboard/planning"
+                component={Planning}
+              />
+              <PrivateRoute
+                exact
+                path="/dashboard/userpanel"
+                component={UserPanel}
+              />
               <Redirect from="*" to="/" />
             </Switch>
           </Router>

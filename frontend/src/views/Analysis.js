@@ -4,6 +4,7 @@ import AnalysisSidebar from "../components/AnalysisSidebar/AnalysisSidebar";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import MiniModal from "../components/MiniModal/MiniModal";
+import ListExpenses from "../components/ListExpenses/ListExpenses";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -57,7 +58,6 @@ const Analysis = () => {
     ),
     ([category, quantity]) => ({ category, quantity })
   );
-  // const [newAccounts, setNewAccounts] = useState(newAcc);
 
   expenses.forEach(function (a) {
     if (!this[a.category]) {
@@ -76,17 +76,22 @@ const Analysis = () => {
     this[a.groupCategory].quantity += a.quantity;
   }, Object.create(null));
 
-  const [returnData, setreturnData] = useState([]);
+  const enterData = accounts.filter((a) => {
+    if (a.category === account.category) {
+      return a;
+    }
+  });
+
+  const [newData, setnewData] = useState(expenses);
+
   const dataExpListGroup = (acc) => {
-    const xyz = expenses.map((exp) => {
-      if (exp.groupCategory === acc.groupCategory) {
-        console.log(exp);
+    const dataList = expenses.filter((exp) => {
+      if (exp.category === acc.category) {
+        return exp;
       }
     });
-    console.log(xyz);
+    setnewData(dataList);
   };
-
-  const [newData, setnewData] = useState([]);
 
   const dataExpListIdAcc = (acc) => {
     const dataList = expenses.filter((exp) => {
@@ -95,25 +100,25 @@ const Analysis = () => {
       }
     });
     setnewData(dataList);
+    console.log(newData);
   };
 
-  const showData = (account) => {
-    setreturnData(account);
+  const [accCatObj, setAccCatObj] = useState([]);
+
+  const selectCategoryObj = (account, accounts) => {
+    const accArray = accounts.filter((acc) => {
+      if (acc.category === account.category) {
+        return acc.id;
+      }
+    });
+    setAccCatObj(accArray);
+    console.log(accCatObj);
+
+    const accountIds = accArray.map((e) => e.id);
+
+    const alldata = expenses.filter((e) => accountIds.includes(e.idAccount));
+    setnewData(alldata);
   };
-
-  useEffect(() => {
-    console.log(returnData);
-  }, [returnData]);
-
-  // const [newECG, setNewECG] = useState(newExpensesGroupCategory);
-  // const [newEC, setNewEC] = useState(newExpensesCategory);
-
-  // useEffect(() => {
-  //   setNewAccounts(newAcc);
-  //   setNewECG(newExpensesGroupCategory);
-  //   setNewEC(newExpensesCategory);
-  //   console.log(account);
-  // }, [accounts, expenses, account]);
 
   return (
     <UserPageTemplate pageContext="analysis">
@@ -122,25 +127,66 @@ const Analysis = () => {
           newAccounts={newAcc}
           newExpensesCategory={newExpensesCategory}
           newExpensesGroupCategory={newExpensesGroupCategory}
+          newData={newData}
+          setnewData={setnewData}
+          enterData={enterData}
+          selectCategoryObj={selectCategoryObj}
+          dataExpListIdAcc={dataExpListIdAcc}
+          accCatObj={accCatObj}
         />
+
         <StyledAccountList>
           {account.title === "Wszystkie" && (
             <>
-              {newExpensesCategory.map((acc) => {
-                return <div key={acc.id}>{acc.category}</div>;
+              {accounts.map((acc) => {
+                return (
+                  <>
+                    <div key={acc.id}>{acc.category}</div>
+                    <div>{acc.quantity}</div>
+                  </>
+                );
+              })}
+              ,
+              {expenses.map((e) => {
+                return (
+                  <div>
+                    <p>{e.category}</p>
+                    <p>{e.quantity}</p>
+                  </div>
+                );
               })}
             </>
           )}
 
-          {account.title !== "Wszystkie" && (
+          <StyledAccount>
+            {accCatObj.map((obj) => {
+              if (obj.type) {
+                return (
+                  <StyledGridCategory onClick={() => dataExpListIdAcc(obj)}>
+                    {obj.title}
+                  </StyledGridCategory>
+                );
+              }
+            })}
+          </StyledAccount>
+          {/* <StyledAccount>
+            {ExpCatObj.map((obj) => {
+              return (
+                <StyledGridCategory onClick={() => dataExpListIdAcc(obj)}>
+                  {obj.category}
+                </StyledGridCategory>
+              );
+            })}
+          </StyledAccount> */}
+          {/* {account.title !== "Wszystkie" && (
             <>
               <StyledAccount>
                 {accounts.map((acc) => {
-                  if (account.category === acc.category && { select }) {
+                  if (account.category === acc.category) {
                     return (
                       <StyledGridCategory
                         key={acc.id}
-                        onClick={() => showData(dataExpListIdAcc(acc))}
+                        onClick={() => dataExpListIdAcc(acc)}
                       >
                         {acc.title}
                       </StyledGridCategory>
@@ -158,7 +204,7 @@ const Analysis = () => {
                     return (
                       <StyledGridCategory
                         key={acc.id}
-                        onClick={() => showData(dataExpListGroup(acc))}
+                        onClick={() => dataExpListGroup(acc)}
                       >
                         {acc.groupCategory}
                       </StyledGridCategory>
@@ -166,18 +212,28 @@ const Analysis = () => {
                   }
                 })}
               </StyledAccount>
-
-              {newData.map((data) => {
-                return (
-                  <div>
-                    <p>{data.category} </p>
-                    <p>{data.groupCategory}</p>
-                    <p>{data.quantity}</p>
-                  </div>
-                );
-              })}
             </>
-          )}
+          )} */}
+          <ListExpenses newData={newData} />
+
+          {!account &&
+            (accounts.map((a) => {
+              return (
+                <div>
+                  <p>{a.title}</p>
+                  <p>{a.category}</p>
+                  <p>{a.quantity}</p>
+                </div>
+              );
+            }),
+            expenses.map((e) => {
+              return (
+                <div>
+                  <p>{e.category}</p>
+                  <p>{e.quantity}</p>
+                </div>
+              );
+            }))}
 
           {open && (
             <MiniModal

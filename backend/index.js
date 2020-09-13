@@ -9,12 +9,7 @@ const bcrypt = require("bcrypt");
 const authorization = require("./middleware/authorization");
 const passport = require("passport");
 var session = require("express-session");
-const todos = require("./middleware/todos");
 const compression = require("compression");
-
-// const initializePassport = require("./passportConfig");
-
-// initializePassport(passport);
 
 const ENV = process.env.NODE_ENV;
 console.log(`ENV ${ENV}`);
@@ -23,26 +18,10 @@ console.log(`PORT ${PORT}`);
 
 app.use(cors());
 app.use(compression());
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(
-//   session({
-//     secret: "secret",
-//     resave: false,
-//     saveUninitialized: false,
-//   })
-// );
-// app.use(passport.initialize());
-// app.use(passport.session());
-// Use the session middleware
 
 app.use(bodyParser.json());
 if (ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")));
-  // app.use((req, res) => {
-  //   console.log("kurwa mać");
-  //   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
-  // });
 } else {
   app.use(express.static("frontend/build"));
 }
@@ -72,9 +51,6 @@ app.post("/user/register", async (req, res) => {
       };
       res.send(resOb);
       res.redirect("/user/login");
-      // console.log("Token: " + token);
-      // console.log(res.json({ token }));
-      // return res.json({ token });
     }
   } catch (err) {
     console.error(err.message);
@@ -91,7 +67,7 @@ app.post("/user/login", async (req, res) => {
     if (user.rows.length === 0 || !validPassword) {
       return res.status(403).send("Password or email is incorrect");
     }
-   
+
     const token = jwtGenerator(user.rows[0].id);
     res.json({ token });
   } catch (err) {
@@ -111,15 +87,7 @@ app.get("/user/dashboard", authorization, async (req, res) => {
     res.status(500).json("server Error");
   }
 });
-// app.post("/authentication/verify", authorization, async (req, res) => {
-//   try {
-//     return res.json(true);
-//   } catch (err) {
-//     res.status(500).send("Server error");
-//   }
-// });
 
-app.use("/", todos);
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });

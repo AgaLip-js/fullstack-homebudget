@@ -163,6 +163,11 @@ const AnalysisSidebar = ({
   newAccounts,
   newExpensesCategory,
   newExpensesGroupCategory,
+  newData,
+  setnewData,
+  enterData,
+  selectCategoryObj,
+  dataExpListIdAcc,
 }) => {
   const { accounts, account, select, open, expenses } = useSelector(
     (store) => ({
@@ -183,14 +188,6 @@ const AnalysisSidebar = ({
       acc.map((account) => account.category === cat && account.quantity)
     );
 
-  const sumWalletAll = sumFn(accounts, "Portfel");
-  const sumSaveaccAll = sumFn(accounts, "Konto oszczędnościowe");
-  const sumShoppingExp = sumFn(expenses, "Zakupy");
-
-  const filterByCategory = (data, category) => {
-    return data.map((obj) => (obj.category === category ? obj : null));
-  };
-
   const all = {
     id: uuidv4(),
     quantity: sumAll,
@@ -206,9 +203,15 @@ const AnalysisSidebar = ({
 
   const dispatch = useDispatch();
 
-  const selectAcc = (acc) => {
-    dispatch(selectAccount(acc));
+  const selectAcc = (account, accounts) => {
+    dispatch(selectAccount(account));
+    selectCategoryObj(account, accounts);
   };
+  // const selectExp = (acc) => {
+  //   dispatch(selectAccount(acc));
+  //   selectExpensesCatObj(acc);
+  // };
+
   const opentModal = (category) => {
     dispatch(openMiniModal(category));
     console.log(open);
@@ -226,7 +229,7 @@ const AnalysisSidebar = ({
       <StyledSection>
         <StyledFirstSection
           onClick={() => {
-            selectAcc(all);
+            selectAcc(all, accounts);
           }}
         >
           <StyledParagraph primary>Wszystkie</StyledParagraph>
@@ -238,7 +241,7 @@ const AnalysisSidebar = ({
           return (
             <StyledFirstSection
               onClick={() => {
-                selectAcc(acc);
+                selectAcc(acc, accounts);
               }}
             >
               <StyledParagraph primary>{acc.category}</StyledParagraph>
@@ -257,7 +260,7 @@ const AnalysisSidebar = ({
         <StyledSection>
           <StyledFirstSection
             onClick={() => {
-              selectAcc(allExp);
+              selectAcc(allExp, expenses);
             }}
           >
             <StyledParagraph primary>Wszystkie</StyledParagraph>
@@ -269,7 +272,7 @@ const AnalysisSidebar = ({
             return (
               <StyledFirstSection
                 onClick={() => {
-                  selectAcc(acc);
+                  selectAcc(acc, expenses);
                 }}
               >
                 <StyledParagraph primary>{acc.category}</StyledParagraph>

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import MiniModal from "../components/MiniModal/MiniModal";
 import ListExpenses from "../components/ListExpenses/ListExpenses";
+import { v4 as uuidv4 } from "uuid";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -18,19 +19,50 @@ const StyledAccountList = styled.div`
   width: 100%;
 `;
 const StyledAccount = styled.div`
+  display: grid;
+  width: 100%;
+  border-bottom: 1px solid #ffffff;
+  margin: 0 0 20px 0;
+  text-align: center;
+  align-items: center;
+  grid-template-columns: 1fr 1fr;
+`;
+const StyledAccountSelect = styled.div`
   display: flex;
   justify-content: center;
-  width: 100%;
+  /* width: 100%; */
   flex-wrap: wrap;
+`;
+const StyledAccountTitle = styled.h4`
+  text-align: start;
+  font-size: 18px;
+  color: #1383c5;
+  font-weight: 700;
+  padding: 0 20px;
 `;
 const StyledGridCategory = styled.div`
   margin: 20px;
-  background: ${({ theme }) => theme.primarycolor};
-  color: white;
+  background: ${({ active }) => (active ? "white" : "#1383c5")};
+  color: ${({ active }) => (active ? "#1383c5" : "white")};
   border-radius: 10px;
   padding: 20px;
   cursor: pointer;
   font-weight: ${({ theme }) => theme.font500};
+`;
+const StyledExpensesList = styled.div`
+  display: grid;
+  width: 100%;
+  margin: 0 0 20px 0;
+  text-align: center;
+  align-items: center;
+  grid-template-rows: auto auto;
+  justify-content: center;
+`;
+const StyledExpensestTitle = styled.h4`
+  text-align: center;
+  font-size: 18px;
+  color: #1383c5;
+  font-weight: 700;
 `;
 
 const Analysis = () => {
@@ -47,21 +79,34 @@ const Analysis = () => {
     open: store.analysis.open,
   }));
 
+  const [active, setActive] = useState(-1);
+
   let newExpensesCategory = [];
   let newExpensesGroupCategory = [];
+  let newAcc = [];
 
-  let newAcc = Array.from(
-    accounts.reduce(
-      (m, { category, quantity }) =>
-        m.set(category, (m.get(category) || 0) + quantity),
-      new Map()
-    ),
-    ([category, quantity]) => ({ category, quantity })
-  );
+  accounts.forEach(function (a) {
+    if (!this[a.category]) {
+      this[a.category] = {
+        category: a.category,
+        quantity: 0,
+        id: uuidv4(),
+      };
+      newAcc.push(this[a.category]);
+    }
+    this[a.category].quantity += a.quantity;
+  }, Object.create(null));
+
+  console.log(newAcc);
 
   expenses.forEach(function (a) {
     if (!this[a.category]) {
-      this[a.category] = { category: a.category, quantity: 0 };
+      this[a.category] = {
+        category: a.category,
+        quantity: 0,
+        type: "Wydatek",
+        id: uuidv4(),
+      };
       newExpensesCategory.push(this[a.category]);
     }
     if (!this[a.groupCategory]) {
@@ -69,6 +114,8 @@ const Analysis = () => {
         category: a.category,
         groupCategory: a.groupCategory,
         quantity: 0,
+        type: "Wydatek",
+        id: uuidv4(),
       };
       newExpensesGroupCategory.push(this[a.groupCategory]);
     }
@@ -76,22 +123,16 @@ const Analysis = () => {
     this[a.groupCategory].quantity += a.quantity;
   }, Object.create(null));
 
-  const enterData = accounts.filter((a) => {
-    if (a.category === account.category) {
-      return a;
-    }
-  });
+  console.log(newExpensesGroupCategory);
+  console.log(newExpensesCategory);
 
   const [newData, setnewData] = useState(expenses);
 
-  const dataExpListGroup = (acc) => {
-    const dataList = expenses.filter((exp) => {
-      if (exp.category === acc.category) {
-        return exp;
-      }
-    });
-    setnewData(dataList);
-  };
+  const expCategoryList = newExpensesGroupCategory.filter((exp) => {
+    if (exp.category === account.category) {
+      return exp;
+    }
+  });
 
   const dataExpListIdAcc = (acc) => {
     const dataList = expenses.filter((exp) => {
@@ -99,11 +140,11 @@ const Analysis = () => {
         return exp;
       }
     });
+    setActive(acc.id);
     setnewData(dataList);
-    console.log(newData);
   };
 
-  const [accCatObj, setAccCatObj] = useState([]);
+  const [accCatObj, setAccCatObj] = useState(accounts);
 
   const selectCategoryObj = (account, accounts) => {
     const accArray = accounts.filter((acc) => {
@@ -112,13 +153,40 @@ const Analysis = () => {
       }
     });
     setAccCatObj(accArray);
-    console.log(accCatObj);
+    if (accArray.length === 0) {
+      setAccCatObj(accounts);
+    }
 
     const accountIds = accArray.map((e) => e.id);
-
-    const alldata = expenses.filter((e) => accountIds.includes(e.idAccount));
-    setnewData(alldata);
+    if (accountIds.length !== 0) {
+      const alldata = expenses.filter((e) => accountIds.includes(e.idAccount));
+      setnewData(alldata);
+    } else if (account.title === "Wszystkie") {
+      setnewData(expenses);
+    } else {
+      setnewData(newExpensesGroupCategory);
+    }
   };
+
+  const selectExpensesObj = (account, expenses) => {
+    const accArray = expenses.filter((acc) => {
+      if (acc.category === account.category) {
+        return acc;
+      }
+    });
+    setnewData(accArray);
+
+    const accountIds = accArray.map((e) => e.idAccount);
+    console.log(accountIds);
+    if (accountIds.length !== 0) {
+      const alldata = accounts.filter((e) => accountIds.includes(e.id));
+      setAccCatObj(alldata);
+    }
+  };
+  useEffect(() => {
+    setActive(-1);
+    console.log(account);
+  }, [account]);
 
   return (
     <UserPageTemplate pageContext="analysis">
@@ -126,115 +194,44 @@ const Analysis = () => {
         <AnalysisSidebar
           newAccounts={newAcc}
           newExpensesCategory={newExpensesCategory}
-          newExpensesGroupCategory={newExpensesGroupCategory}
-          newData={newData}
-          setnewData={setnewData}
-          enterData={enterData}
           selectCategoryObj={selectCategoryObj}
-          dataExpListIdAcc={dataExpListIdAcc}
+          selectExpensesObj={selectExpensesObj}
           accCatObj={accCatObj}
         />
 
         <StyledAccountList>
-          {account.title === "Wszystkie" && (
-            <>
-              {accounts.map((acc) => {
-                return (
-                  <>
-                    <div key={acc.id}>{acc.category}</div>
-                    <div>{acc.quantity}</div>
-                  </>
-                );
-              })}
-              ,
-              {expenses.map((e) => {
-                return (
-                  <div>
-                    <p>{e.category}</p>
-                    <p>{e.quantity}</p>
-                  </div>
-                );
-              })}
-            </>
-          )}
-
           <StyledAccount>
-            {accCatObj.map((obj) => {
-              if (obj.type) {
-                return (
-                  <StyledGridCategory onClick={() => dataExpListIdAcc(obj)}>
-                    {obj.title}
-                  </StyledGridCategory>
-                );
-              }
-            })}
+            <StyledAccountTitle>Typ konta</StyledAccountTitle>
+            <StyledAccountSelect>
+              {accCatObj.length >= 1 && (
+                <>
+                  {accCatObj.map((obj) => {
+                    if (obj) {
+                      return (
+                        <StyledGridCategory
+                          key={obj.id}
+                          active={active === obj.id}
+                          onClick={() => dataExpListIdAcc(obj)}
+                        >
+                          {obj.title}
+                        </StyledGridCategory>
+                      );
+                    }
+                  })}
+                </>
+              )}
+            </StyledAccountSelect>
           </StyledAccount>
-          {/* <StyledAccount>
-            {ExpCatObj.map((obj) => {
-              return (
-                <StyledGridCategory onClick={() => dataExpListIdAcc(obj)}>
-                  {obj.category}
-                </StyledGridCategory>
-              );
-            })}
-          </StyledAccount> */}
-          {/* {account.title !== "Wszystkie" && (
-            <>
-              <StyledAccount>
-                {accounts.map((acc) => {
-                  if (account.category === acc.category) {
-                    return (
-                      <StyledGridCategory
-                        key={acc.id}
-                        onClick={() => dataExpListIdAcc(acc)}
-                      >
-                        {acc.title}
-                      </StyledGridCategory>
-                    );
-                  }
-                })}
-              </StyledAccount>
-
-              <StyledAccount>
-                {newExpensesGroupCategory.map((acc) => {
-                  if (
-                    account.category === acc.category &&
-                    acc.groupCategory !== "" && { select }
-                  ) {
-                    return (
-                      <StyledGridCategory
-                        key={acc.id}
-                        onClick={() => dataExpListGroup(acc)}
-                      >
-                        {acc.groupCategory}
-                      </StyledGridCategory>
-                    );
-                  }
-                })}
-              </StyledAccount>
-            </>
-          )} */}
-          <ListExpenses newData={newData} />
-
-          {!account &&
-            (accounts.map((a) => {
-              return (
-                <div>
-                  <p>{a.title}</p>
-                  <p>{a.category}</p>
-                  <p>{a.quantity}</p>
-                </div>
-              );
-            }),
-            expenses.map((e) => {
-              return (
-                <div>
-                  <p>{e.category}</p>
-                  <p>{e.quantity}</p>
-                </div>
-              );
-            }))}
-
+          {account.type === "Wydatek" && (
+            <ListExpenses
+              expCategoryList={expCategoryList}
+              newExpensesCategory={newExpensesCategory}
+            />
+          )}
+          <StyledExpensesList>
+            <StyledExpensestTitle>Lista wydatków</StyledExpensestTitle>
+            <ListExpenses newData={newData} />
+          </StyledExpensesList>
           {open && (
             <MiniModal
               newAccounts={newAcc}

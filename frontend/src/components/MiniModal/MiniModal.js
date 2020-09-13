@@ -167,6 +167,7 @@ const MiniModal = ({
     quantity: account ? account.quantity : "",
     date: addDate,
     id: account ? account.id : uuidv4(),
+    type: account ? account.type : "",
   };
   const newExpense = {
     id: account ? account.id : uuidv4(),
@@ -176,6 +177,7 @@ const MiniModal = ({
     category: account ? account.category : "",
     groupCategory: account ? account.groupCategory : "",
     title: account ? account.title : "",
+    type: "Wydatek",
   };
   const [newWallet, setNewWallet] = useState(newAccount);
   const [newExp, setNewExp] = useState(newExpense);
@@ -236,6 +238,11 @@ const MiniModal = ({
               value={newWallet.quantity}
               onChange={handleInputWalletChange}
             />
+            <StyledSelect onChange={handleInputWalletChange} name="type">
+              <StyledOption value="Środki bieżące">Środki bieżące</StyledOption>
+              <StyledOption value="Oszczędności">Oszczędności</StyledOption>
+            </StyledSelect>
+            <StyledLabel>Typ konta</StyledLabel>
             <Button type="button" primary onClick={() => submitAcc(newWallet)}>
               Dodaj konto
             </Button>

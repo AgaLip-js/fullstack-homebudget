@@ -9,6 +9,7 @@ export const initialExpenses = [
     category: "Zakupy",
     groupCategory: "Jedzenie",
     title: "Zakupy Biedronka",
+    type: "Wydatek",
   },
   {
     id: "5",
@@ -19,6 +20,7 @@ export const initialExpenses = [
     category: "Zakupy",
     groupCategory: "Chemia",
     title: "Zakupy Rossman",
+    type: "Wydatek",
   },
   {
     id: "6",
@@ -27,8 +29,9 @@ export const initialExpenses = [
     idAccount: "2",
     quantity: 200,
     category: "Podróże",
-    groupCategory: "",
+    groupCategory: "Góry",
     title: "Góry Sowie",
+    type: "Wydatek",
   },
   {
     id: "7",
@@ -39,6 +42,7 @@ export const initialExpenses = [
     category: "Kredyt",
     groupCategory: "Kredyt hipoteczny",
     title: "Nasze mieszkanie",
+    type: "Wydatek",
   },
   {
     id: "8",
@@ -49,5 +53,28 @@ export const initialExpenses = [
     category: "Zakupy",
     groupCategory: "Jedzenie",
     title: "Zakupy Lidl",
+    type: "Wydatek",
+  },
+  {
+    id: "9",
+    user_id: "1",
+    date: "13.09.2020",
+    idAccount: "2",
+    quantity: 50,
+    category: "Zakupy",
+    groupCategory: "Jedzenie",
+    title: "Zakupy City",
+    type: "Wydatek",
+  },
+  {
+    id: "10",
+    user_id: "1",
+    date: "13.09.2020",
+    idAccount: "2",
+    quantity: 250,
+    category: "Kredyt",
+    groupCategory: "Termomix",
+    title: "Rata",
+    type: "Wydatek",
   },
 ];

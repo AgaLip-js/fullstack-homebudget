@@ -162,12 +162,8 @@ const StyledItemBar = styled.span`
 const AnalysisSidebar = ({
   newAccounts,
   newExpensesCategory,
-  newExpensesGroupCategory,
-  newData,
-  setnewData,
-  enterData,
   selectCategoryObj,
-  dataExpListIdAcc,
+  selectExpensesObj,
 }) => {
   const { accounts, account, select, open, expenses } = useSelector(
     (store) => ({
@@ -199,6 +195,7 @@ const AnalysisSidebar = ({
     quantity: sumAllExp,
     category: "Wszystkie wydatki",
     title: "Wszystkie",
+    type: "Wydatek",
   };
 
   const dispatch = useDispatch();
@@ -207,22 +204,17 @@ const AnalysisSidebar = ({
     dispatch(selectAccount(account));
     selectCategoryObj(account, accounts);
   };
-  // const selectExp = (acc) => {
-  //   dispatch(selectAccount(acc));
-  //   selectExpensesCatObj(acc);
-  // };
+
+  const selectExp = (account, expenses) => {
+    dispatch(selectAccount(account));
+    selectExpensesObj(account, expenses);
+  };
 
   const opentModal = (category) => {
     dispatch(openMiniModal(category));
     console.log(open);
   };
 
-  const [active, setActive] = useState(false);
-
-  const [openWallet, setopenWallet] = useState(false);
-
-  const [openSaveAcc, setopenSaveAcc] = useState(false);
-  const [openExpenses, setopenExpenses] = useState(false);
   return (
     <StyledWalletNavbar>
       <StyledTitle>Konta</StyledTitle>
@@ -240,6 +232,7 @@ const AnalysisSidebar = ({
         {newAccounts.map((acc) => {
           return (
             <StyledFirstSection
+              key={acc.category}
               onClick={() => {
                 selectAcc(acc, accounts);
               }}
@@ -260,7 +253,7 @@ const AnalysisSidebar = ({
         <StyledSection>
           <StyledFirstSection
             onClick={() => {
-              selectAcc(allExp, expenses);
+              selectAcc(allExp, accounts);
             }}
           >
             <StyledParagraph primary>Wszystkie</StyledParagraph>
@@ -271,8 +264,9 @@ const AnalysisSidebar = ({
           {newExpensesCategory.map((acc) => {
             return (
               <StyledFirstSection
+                key={acc.category}
                 onClick={() => {
-                  selectAcc(acc, expenses);
+                  selectExp(acc, expenses);
                 }}
               >
                 <StyledParagraph primary>{acc.category}</StyledParagraph>
@@ -287,149 +281,6 @@ const AnalysisSidebar = ({
             <FontAwesomeIcon icon={faPlusCircle} style={{ margin: "0 10px" }} />
           </StyledIcon>
         </StyledOptionWrapper>
-
-        {/* <StyledOpenSection
-          onClick={() => {
-            setopenWallet(!openWallet);
-            selectAcc(allWallets);
-          }}
-          props={openWallet}
-        >
-          <StyledParagraph primary>Portfel</StyledParagraph>
-          <StyledQuantity primary>{sumWalletAll} PLN</StyledQuantity>
-        </StyledOpenSection>
-        <StyledSecondSection props={openWallet}>
-          <StyledItemWrapper>
-            {filterByCategory(accounts, "Portfel").map(
-              (acc) =>
-                acc !== null && (
-                  <StyledAccData
-                    onClick={() => {
-                      selectAcc(acc);
-                    }}
-                    key={acc.id}
-                  >
-                    <StyledParagraph>{acc.title}</StyledParagraph>
-                    <StyledQuantity>{acc.quantity} PLN </StyledQuantity>
-                  </StyledAccData>
-                )
-            )}
-          </StyledItemWrapper>
-          <StyledOptionWrapper>
-            <StyledAddTitle>Dodaj portfel</StyledAddTitle>
-            <StyledIcon onClick={() => opentModal("Portfel")}>
-              <FontAwesomeIcon
-                icon={faPlusCircle}
-                style={{ margin: "0 10px" }}
-              />
-            </StyledIcon>
-          </StyledOptionWrapper>
-        </StyledSecondSection>
-      </StyledSection>
-
-      <StyledSection>
-        <StyledOpenSection
-          onClick={() => {
-            setopenSaveAcc(!openSaveAcc);
-            selectAcc(allSaveAcc);
-          }}
-          props={openSaveAcc}
-        >
-          <StyledParagraph primary> Konto oszczędnościowe</StyledParagraph>
-          <StyledQuantity primary>{sumSaveaccAll} PLN</StyledQuantity>
-        </StyledOpenSection>
-        <StyledSecondSection props={openSaveAcc}>
-          <StyledItemWrapper>
-            {filterByCategory(accounts, "Konto oszczędnościowe").map(
-              (acc) =>
-                acc !== null && (
-                  <StyledAccData
-                    onClick={() => {
-                      selectAcc(acc);
-                    }}
-                    key={acc.id}
-                  >
-                    <StyledParagraph>{acc.title}</StyledParagraph>
-                    <StyledQuantity>{acc.quantity} PLN </StyledQuantity>
-                  </StyledAccData>
-                )
-            )}
-          </StyledItemWrapper>
-          <StyledOptionWrapper>
-            <StyledAddTitle>Dodaj Konto </StyledAddTitle>
-            <StyledIcon onClick={() => opentModal("Konto oszczędnościowe")}>
-              <FontAwesomeIcon
-                icon={faPlusCircle}
-                style={{ margin: "0 10px" }}
-              />
-            </StyledIcon>
-          </StyledOptionWrapper>
-        </StyledSecondSection>
-      </StyledSection>
-      <StyledTitle>Kategorie wydatków</StyledTitle>
-      <StyledSection>
-        <StyledFirstSection>
-          <StyledParagraph primary>Wszystkie</StyledParagraph>
-          <StyledQuantity primary>{sumAllExp} PLN</StyledQuantity>
-        </StyledFirstSection>
-        <StyledSection>
-          <StyledOpenSection
-            onClick={() => {
-              setopenExpenses(!openExpenses);
-            }}
-            props={openExpenses}
-          >
-            <StyledParagraph primary> Zakupy</StyledParagraph>
-            <StyledQuantity primary>{sumShoppingExp} PLN</StyledQuantity>
-          </StyledOpenSection>
-          <StyledSecondSection props={openExpenses}>
-            <StyledItemWrapper>
-              {filterByCategory(expenses, "Zakupy").map(
-                (acc) =>
-                  acc !== null && (
-                    <StyledAccData
-                      onClick={() => {
-                        selectAcc(acc);
-                      }}
-                      key={acc.id}
-                    >
-                      <StyledParagraph>{acc.groupCategory}</StyledParagraph>
-                      <StyledQuantity>{acc.quantity} PLN </StyledQuantity>
-                    </StyledAccData>
-                  )
-              )}
-            </StyledItemWrapper>
-          </StyledSecondSection>
-        </StyledSection>
-        <StyledSection>
-          <StyledOpenSection
-            onClick={() => {
-              setopenExpenses(!openExpenses);
-            }}
-            props={openExpenses}
-          >
-            <StyledParagraph primary> Zakupy</StyledParagraph>
-            <StyledQuantity primary>{sumShoppingExp} PLN</StyledQuantity>
-          </StyledOpenSection>
-          <StyledSecondSection props={openExpenses}>
-            <StyledItemWrapper>
-              {filterByCategory(expenses, "Zakupy").map(
-                (acc) =>
-                  acc !== null && (
-                    <StyledAccData
-                      onClick={() => {
-                        selectAcc(acc);
-                      }}
-                      key={acc.id}
-                    >
-                      <StyledParagraph>{acc.groupCategory}</StyledParagraph>
-                      <StyledQuantity>{acc.quantity} PLN </StyledQuantity>
-                    </StyledAccData>
-                  )
-              )}
-            </StyledItemWrapper>
-          </StyledSecondSection>
-        </StyledSection> */}
       </StyledSection>
     </StyledWalletNavbar>
   );

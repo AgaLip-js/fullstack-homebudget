@@ -35,18 +35,24 @@ const StyledGraphTitle = styled.h4`
   padding: 0 20px;
 `;
 
-const ListExpenses = ({ newData, expCategoryList, newExpensesCategory }) => {
+const ListExpenses = ({
+  newData,
+  expCategoryList,
+  newExpensesCategory,
+  expGraphTable,
+  active,
+}) => {
   const { accounts, expenses, account } = useSelector((store) => ({
     accounts: store.analysis.accounts,
     expenses: store.analysis.expenses,
     account: store.analysis.account,
   }));
-  console.log(expCategoryList);
 
   return (
     <>
-      {newData && (
+      {newData && account.type !== "Wydatek" && (
         <StyledWrapper>
+          <HeaderTitle>Lista wydatków</HeaderTitle>
           <StyledGridHeader>
             <StyledColumn primary> Data </StyledColumn>
             <StyledColumn primary> Tytuł </StyledColumn>
@@ -68,39 +74,79 @@ const ListExpenses = ({ newData, expCategoryList, newExpensesCategory }) => {
           })}
         </StyledWrapper>
       )}
-      {expCategoryList && expCategoryList.length !== 0 && (
+
+      {expGraphTable &&
+        expCategoryList.length !== 0 &&
+        account.type === "Wydatek" && (
+          <StyledWrapper>
+            <HeaderTitle>Wykres wydatków</HeaderTitle>
+            <StyledGridHeader primary>
+              <StyledColumn primary> Kategoria </StyledColumn>
+              <StyledColumn primary> Podgrupa kategorii </StyledColumn>
+              <StyledColumn primary> Ilość [zł] </StyledColumn>
+            </StyledGridHeader>
+            {expGraphTable.map((data) => {
+              if (data.category === account.category) {
+                return (
+                  <>
+                    <StyledGrid primary key={data.id}>
+                      <StyledColumn>{data.category} </StyledColumn>
+                      <StyledColumn>{data.groupCategory} </StyledColumn>
+                      <StyledColumn>{data.quantity} </StyledColumn>
+                    </StyledGrid>
+                  </>
+                );
+              }
+            })}
+          </StyledWrapper>
+        )}
+      {expGraphTable &&
+        expCategoryList.length === 0 &&
+        account.type === "Wydatek" && (
+          <StyledWrapper>
+            <HeaderTitle>Wykres wydatków</HeaderTitle>
+            <StyledGridHeader primary>
+              <StyledColumn primary> Kategoria </StyledColumn>
+              <StyledColumn primary> Podgrupa kategorii </StyledColumn>
+              <StyledColumn primary> Ilość [zł] </StyledColumn>
+            </StyledGridHeader>
+            {expGraphTable.map((data) => {
+              return (
+                <StyledGrid primary key={data.id}>
+                  <StyledColumn>{data.category} </StyledColumn>
+                  <StyledColumn>{data.groupCategory} </StyledColumn>
+                  <StyledColumn>{data.quantity} </StyledColumn>
+                </StyledGrid>
+              );
+            })}
+          </StyledWrapper>
+        )}
+      {newData && account.type === "Wydatek" && (
         <StyledWrapper>
-          <HeaderTitle>Wykres wydatków</HeaderTitle>
-          <StyledGridHeader primary>
+          <HeaderTitle>Lista wydatków</HeaderTitle>
+          <StyledGridHeader>
+            <StyledColumn primary> Data </StyledColumn>
+            <StyledColumn primary> Tytuł </StyledColumn>
             <StyledColumn primary> Kategoria </StyledColumn>
             <StyledColumn primary> Podgrupa kategorii </StyledColumn>
             <StyledColumn primary> Ilość [zł] </StyledColumn>
           </StyledGridHeader>
-          {expCategoryList.map((data) => {
-            return (
-              <StyledGrid primary key={data.id}>
-                <StyledColumn>{data.category} </StyledColumn>
-                <StyledColumn>{data.groupCategory} </StyledColumn>
-                <StyledColumn>{data.quantity} </StyledColumn>
-              </StyledGrid>
-            );
-          })}
-        </StyledWrapper>
-      )}
-      {newExpensesCategory && expCategoryList.length === 0 && (
-        <StyledWrapper>
-          <HeaderTitle>Wykres wydatków</HeaderTitle>
-          <StyledGridHeaderAll>
-            <StyledColumn primary> Kategoria </StyledColumn>
-            <StyledColumn primary> Ilość [zł] </StyledColumn>
-          </StyledGridHeaderAll>
-          {newExpensesCategory.map((data) => {
-            return (
-              <StyledGridAll key={data.id}>
-                <StyledColumn>{data.category} </StyledColumn>
-                <StyledColumn>{data.quantity} </StyledColumn>
-              </StyledGridAll>
-            );
+
+          {newData.map((data) => {
+            if (
+              data.category === account.category ||
+              account.category === "Wszystkie wydatki"
+            ) {
+              return (
+                <StyledGrid key={data.id}>
+                  <StyledColumn>{data.date} </StyledColumn>
+                  <StyledColumn>{data.title} </StyledColumn>
+                  <StyledColumn>{data.category} </StyledColumn>
+                  <StyledColumn>{data.groupCategory} </StyledColumn>
+                  <StyledColumn>{data.quantity} </StyledColumn>
+                </StyledGrid>
+              );
+            }
           })}
         </StyledWrapper>
       )}

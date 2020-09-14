@@ -67,11 +67,12 @@ const StyledFirstSection = styled.div`
   align-items: center;
   margin-top: 10px;
   cursor: pointer;
-  font-weight: ${({ props }) => (props ? "700" : "400")};
+  font-weight: ${({ active }) => (active ? "700" : "400")};
+  text-transform: ${({ active }) => (active ? "uppercase" : "none")};
   color: white;
 `;
 const StyledSecondSection = styled.div`
-  display: ${({ props }) => (props ? "block" : "none")};
+  display: ${({ activeBar }) => (activeBar ? "block" : "none")};
 `;
 const StyledGroupQuantity = styled(StyledFirstSection)``;
 
@@ -174,7 +175,7 @@ const AnalysisSidebar = ({
       expenses: store.analysis.expenses,
     })
   );
-  console.log(expenses);
+
   const sumValues = (obj) => Object.values(obj).reduce((a, b) => a + b);
   const sumAll = sumValues(accounts.map((account) => account.quantity));
   const sumAllExp = sumValues(expenses.map((exp) => exp.quantity));
@@ -197,12 +198,13 @@ const AnalysisSidebar = ({
     title: "Wszystkie",
     type: "Wydatek",
   };
-
+  const [activeBar, setActiveBar] = useState("-1");
   const dispatch = useDispatch();
 
-  const selectAcc = (account, accounts) => {
-    dispatch(selectAccount(account));
-    selectCategoryObj(account, accounts);
+  const selectAcc = (ac, accounts) => {
+    dispatch(selectAccount(ac));
+    selectCategoryObj(ac, accounts);
+    setActiveBar(ac.id);
   };
 
   const selectExp = (account, expenses) => {
@@ -215,6 +217,8 @@ const AnalysisSidebar = ({
     console.log(open);
   };
 
+  useEffect(() => {}, []);
+
   return (
     <StyledWalletNavbar>
       <StyledTitle>Konta</StyledTitle>
@@ -222,7 +226,10 @@ const AnalysisSidebar = ({
         <StyledFirstSection
           onClick={() => {
             selectAcc(all, accounts);
+            console.log(all);
+            console.log(account);
           }}
+          active={activeBar === all.id}
         >
           <StyledParagraph primary>Wszystkie</StyledParagraph>
           <StyledQuantity primary>{sumAll} PLN</StyledQuantity>
@@ -232,10 +239,11 @@ const AnalysisSidebar = ({
         {newAccounts.map((acc) => {
           return (
             <StyledFirstSection
-              key={acc.category}
+              key={acc.id}
               onClick={() => {
                 selectAcc(acc, accounts);
               }}
+              active={activeBar === acc.id}
             >
               <StyledParagraph primary>{acc.category}</StyledParagraph>
               <StyledQuantity primary>{acc.quantity} PLN</StyledQuantity>
@@ -255,6 +263,7 @@ const AnalysisSidebar = ({
             onClick={() => {
               selectAcc(allExp, accounts);
             }}
+            active={activeBar === allExp.id}
           >
             <StyledParagraph primary>Wszystkie</StyledParagraph>
             <StyledQuantity primary>{sumAllExp} PLN</StyledQuantity>

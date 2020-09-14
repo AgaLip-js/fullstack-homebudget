@@ -133,23 +133,36 @@ const Analysis = () => {
       return exp;
     }
   });
-
+  let expGraphTable = [];
   const dataExpListIdAcc = (acc) => {
     const dataList = expenses.filter((exp) => {
       if (exp.idAccount === acc.id) {
         return exp;
       }
     });
+
     setActive(acc.id);
     setnewData(dataList);
   };
+  newData.forEach(function (a) {
+    if (!this[a.groupCategory]) {
+      this[a.groupCategory] = {
+        groupCategory: a.groupCategory,
+        quantity: 0,
+        id: uuidv4(),
+        category: a.category,
+      };
+      expGraphTable.push(this[a.groupCategory]);
+    }
+    this[a.groupCategory].quantity += a.quantity;
+  }, Object.create(null));
 
   const [accCatObj, setAccCatObj] = useState(accounts);
 
   const selectCategoryObj = (account, accounts) => {
     const accArray = accounts.filter((acc) => {
       if (acc.category === account.category) {
-        return acc.id;
+        return acc;
       }
     });
     setAccCatObj(accArray);
@@ -183,9 +196,10 @@ const Analysis = () => {
       setAccCatObj(alldata);
     }
   };
+
   useEffect(() => {
-    setActive(-1);
     console.log(account);
+    setActive(-1);
   }, [account]);
 
   return (
@@ -222,16 +236,14 @@ const Analysis = () => {
               )}
             </StyledAccountSelect>
           </StyledAccount>
-          {account.type === "Wydatek" && (
-            <ListExpenses
-              expCategoryList={expCategoryList}
-              newExpensesCategory={newExpensesCategory}
-            />
-          )}
-          <StyledExpensesList>
-            <StyledExpensestTitle>Lista wydatków</StyledExpensestTitle>
-            <ListExpenses newData={newData} />
-          </StyledExpensesList>
+
+          <ListExpenses
+            expCategoryList={expCategoryList}
+            newExpensesCategory={newExpensesCategory}
+            expGraphTable={expGraphTable}
+            active={active}
+            newData={newData}
+          />
           {open && (
             <MiniModal
               newAccounts={newAcc}

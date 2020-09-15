@@ -4,8 +4,9 @@ import AnalysisSidebar from "../components/AnalysisSidebar/AnalysisSidebar";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import MiniModal from "../components/MiniModal/MiniModal";
-import ListExpenses from "../components/ListExpenses/ListExpenses";
+
 import { v4 as uuidv4 } from "uuid";
+import DataExpenses from "../components/DataExpenses/DataExpenses";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -140,7 +141,6 @@ const Analysis = () => {
         return exp;
       }
     });
-
     setActive(acc.id);
     setnewData(dataList);
   };
@@ -217,7 +217,7 @@ const Analysis = () => {
           <StyledAccount>
             <StyledAccountTitle>Typ konta</StyledAccountTitle>
             <StyledAccountSelect>
-              {accCatObj.length >= 1 && (
+              {accCatObj.length > 1 ? (
                 <>
                   {accCatObj.map((obj) => {
                     if (obj) {
@@ -233,11 +233,23 @@ const Analysis = () => {
                     }
                   })}
                 </>
+              ) : (
+                <>
+                  {accCatObj.map((obj) => {
+                    if (obj) {
+                      return (
+                        <StyledGridCategory key={obj.id}>
+                          {obj.title}
+                        </StyledGridCategory>
+                      );
+                    }
+                  })}
+                </>
               )}
             </StyledAccountSelect>
           </StyledAccount>
 
-          <ListExpenses
+          <DataExpenses
             expCategoryList={expCategoryList}
             newExpensesCategory={newExpensesCategory}
             expGraphTable={expGraphTable}

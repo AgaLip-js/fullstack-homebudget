@@ -35,7 +35,7 @@ const StyledGraphTitle = styled.h4`
   padding: 0 20px;
 `;
 
-const ListExpenses = ({
+const DataExpenses = ({
   newData,
   expCategoryList,
   newExpensesCategory,
@@ -154,4 +154,4 @@ const ListExpenses = ({
   );
 };
 
-export default ListExpenses;
+export default DataExpenses;

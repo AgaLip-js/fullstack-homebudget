@@ -6,6 +6,7 @@ export const theme = {
   lightcolor: "#e8f3f9",
   primarycolor: "#1383c5",
   blackcolor: "#333",
+  darkbluecolor: "#05273B",
   whitecolor: "white",
   fontSize: {
     xxs: "12px",

@@ -10,6 +10,7 @@ const initialState = {
   account: "",
   select: false,
   expenses: initialExpenses,
+  title: "",
 };
 const analysisReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -18,6 +19,7 @@ const analysisReducer = (state = initialState, action) => {
         ...state,
         open: action.payload.open,
         category: action.payload.category,
+        title: action.payload.title,
       };
     }
     case CLOSE_MINI_MODAL: {

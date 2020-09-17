@@ -22,6 +22,7 @@ const AnalysisSidebar = ({
   newExpensesCategory,
   selectCategoryObj,
   selectExpensesObj,
+  setSelectWallet,
 }) => {
   const { accounts, account, select, open, expenses } = useSelector(
     (store) => ({
@@ -78,6 +79,7 @@ const AnalysisSidebar = ({
         allExp={allExp}
         newExpensesCategory={newExpensesCategory}
         sumAllExp={sumAllExp}
+        setSelectWallet={setSelectWallet}
       />
       <AccountsList
         title="Kategorie wydatków"
@@ -87,6 +89,7 @@ const AnalysisSidebar = ({
         selectExp={selectExp}
         selectAcc={selectAcc}
         activeBar={activeBar}
+        setSelectWallet={setSelectWallet}
       />
     </StyledWalletNavbar>
   );

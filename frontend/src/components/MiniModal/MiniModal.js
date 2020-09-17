@@ -107,12 +107,14 @@ const MiniModal = ({
   newAccounts,
   newExpensesCategory,
   newExpensesGroupCategory,
+  selectWallet,
 }) => {
   const dispatch = useDispatch();
 
   const [required, setRequired] = useState(false);
-  const { category, accounts, expenses } = useSelector((store) => ({
+  const { category, accounts, expenses, title } = useSelector((store) => ({
     category: store.analysis.category,
+    title: store.analysis.title,
     accounts: store.analysis.accounts,
     expenses: store.analysis.expenses,
   }));
@@ -162,12 +164,12 @@ const MiniModal = ({
   }.${year}`;
 
   const newAccount = {
-    title: account ? account.title : "",
-    category: account ? account.category : "",
-    quantity: account ? account.quantity : "",
+    title: selectWallet ? selectWallet.title : "",
+    category: selectWallet ? selectWallet.category : "",
+    quantity: selectWallet ? selectWallet.quantity : "",
     date: addDate,
-    id: account ? account.id : uuidv4(),
-    type: account ? account.type : "",
+    id: selectWallet ? selectWallet.id : uuidv4(),
+    type: selectWallet ? selectWallet.type : "",
   };
   const newExpense = {
     id: account ? account.id : uuidv4(),
@@ -182,6 +184,7 @@ const MiniModal = ({
   const [newWallet, setNewWallet] = useState(newAccount);
   const [newExp, setNewExp] = useState(newExpense);
   const [idAcc, setIdAcc] = useState("");
+  console.log(selectWallet);
 
   const handleInputWalletChange = (e) => {
     setNewWallet({
@@ -204,8 +207,7 @@ const MiniModal = ({
         </StyledButtonClose>
         {category === "Konto" ? (
           <>
-            <StyledTitle> Dodaj {category}</StyledTitle>
-
+            <StyledTitle> {title} </StyledTitle>
             <Input
               secondary
               className="required"
@@ -244,12 +246,22 @@ const MiniModal = ({
             </StyledSelect>
             <StyledLabel>Typ konta</StyledLabel>
             <Button type="button" primary onClick={() => submitAcc(newWallet)}>
-              Dodaj konto
+              {title}
             </Button>
+            {title === "Edytuj konto" && (
+              <Button
+                secondary
+                primary
+                type="button"
+                onClick={() => submitAcc(newWallet)}
+              >
+                Usuń konto
+              </Button>
+            )}
           </>
         ) : (
           <>
-            <StyledTitle> Dodaj {category}</StyledTitle>
+            <StyledTitle> {title} </StyledTitle>
 
             <Input
               list="expensesCategory"
@@ -311,7 +323,7 @@ const MiniModal = ({
             </StyledSelect>
             <StyledLabel>Konto</StyledLabel>
             <Button type="button" primary onClick={() => submitExp(newExp)}>
-              Dodaj wydatek
+              {title}
             </Button>
           </>
         )}

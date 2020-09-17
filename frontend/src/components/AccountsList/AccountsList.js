@@ -1,9 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPenAlt,
+  faPencilAlt,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { openMiniModal } from "../../redux/actions/analysisActions";
+import OptionWrapper from "../atoms/OptionWrapper";
 
 const StyledFirstSection = styled.div`
   position: relative;
@@ -61,6 +66,7 @@ const AccountsList = ({
   newExpensesCategory,
   sumAllExp,
   selectExp,
+  setSelectWallet,
 }) => {
   const { accounts, open, expenses } = useSelector((store) => ({
     accounts: store.analysis.accounts,
@@ -68,11 +74,6 @@ const AccountsList = ({
     expenses: store.analysis.expenses,
   }));
 
-  const dispatch = useDispatch();
-  const opentModal = (category) => {
-    dispatch(openMiniModal(category));
-    console.log(open);
-  };
   console.log(activeBar);
 
   return (
@@ -103,15 +104,12 @@ const AccountsList = ({
               </StyledFirstSection>
             );
           })}
-          <StyledOptionWrapper>
-            <StyledAddTitle>Dodaj konto</StyledAddTitle>
-            <StyledIcon onClick={() => opentModal("Konto")}>
-              <FontAwesomeIcon
-                icon={faPlusCircle}
-                style={{ margin: "0 10px" }}
-              />
-            </StyledIcon>
-          </StyledOptionWrapper>
+          <OptionWrapper
+            icon={faPlusCircle}
+            title="Dodaj konto"
+            category="Konto"
+            setSelectWallet={setSelectWallet}
+          />
         </>
       ) : (
         <>
@@ -139,16 +137,12 @@ const AccountsList = ({
               </StyledFirstSection>
             );
           })}
-
-          <StyledOptionWrapper>
-            <StyledAddTitle>Dodaj wydatek</StyledAddTitle>
-            <StyledIcon onClick={() => opentModal("Wydatek")}>
-              <FontAwesomeIcon
-                icon={faPlusCircle}
-                style={{ margin: "0 10px" }}
-              />
-            </StyledIcon>
-          </StyledOptionWrapper>
+          <OptionWrapper
+            icon={faPlusCircle}
+            title="Dodaj wydatek"
+            category="Wydatek"
+            setSelectWallet={setSelectWallet}
+          />
         </>
       )}
     </StyledSection>

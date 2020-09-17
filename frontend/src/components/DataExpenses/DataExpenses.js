@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import HeaderTitle from "../atoms/HeaderTitle";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import OptionWrapper from "../atoms/OptionWrapper";
 
 const StyledWrapper = styled.div`
   height: fit-content;
@@ -51,28 +53,30 @@ const DataExpenses = ({
   return (
     <>
       {newData && account.type !== "Wydatek" && (
-        <StyledWrapper>
-          <HeaderTitle>Lista wydatków</HeaderTitle>
-          <StyledGridHeader>
-            <StyledColumn primary> Data </StyledColumn>
-            <StyledColumn primary> Tytuł </StyledColumn>
-            <StyledColumn primary> Kategoria </StyledColumn>
-            <StyledColumn primary> Podgrupa kategorii </StyledColumn>
-            <StyledColumn primary> Ilość [zł] </StyledColumn>
-          </StyledGridHeader>
+        <>
+          <StyledWrapper>
+            <HeaderTitle>Lista wydatków</HeaderTitle>
+            <StyledGridHeader>
+              <StyledColumn primary> Data </StyledColumn>
+              <StyledColumn primary> Tytuł </StyledColumn>
+              <StyledColumn primary> Kategoria </StyledColumn>
+              <StyledColumn primary> Podgrupa kategorii </StyledColumn>
+              <StyledColumn primary> Ilość [zł] </StyledColumn>
+            </StyledGridHeader>
 
-          {newData.map((data) => {
-            return (
-              <StyledGrid key={data.id}>
-                <StyledColumn>{data.date} </StyledColumn>
-                <StyledColumn>{data.title} </StyledColumn>
-                <StyledColumn>{data.category} </StyledColumn>
-                <StyledColumn>{data.groupCategory} </StyledColumn>
-                <StyledColumn>{data.quantity} </StyledColumn>
-              </StyledGrid>
-            );
-          })}
-        </StyledWrapper>
+            {newData.map((data) => {
+              return (
+                <StyledGrid key={data.id}>
+                  <StyledColumn>{data.date} </StyledColumn>
+                  <StyledColumn>{data.title} </StyledColumn>
+                  <StyledColumn>{data.category} </StyledColumn>
+                  <StyledColumn>{data.groupCategory} </StyledColumn>
+                  <StyledColumn>{data.quantity} </StyledColumn>
+                </StyledGrid>
+              );
+            })}
+          </StyledWrapper>
+        </>
       )}
 
       {expGraphTable &&

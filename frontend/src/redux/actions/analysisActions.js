@@ -4,12 +4,13 @@ export const CLOSE_MINI_MODAL = "CLOSE_MINI_MODAL";
 export const ADD_ACCOUNT = "ADD_ACCOUNT";
 export const ADD_EXPENSE = "ADD_EXPENSE";
 
-export const openMiniModal = (category) => (dispatch) => {
+export const openMiniModal = (category, title) => (dispatch) => {
   dispatch({
     type: OPEN_MINIMODAL,
     payload: {
       open: true,
       category: category,
+      title: title,
     },
   });
 };

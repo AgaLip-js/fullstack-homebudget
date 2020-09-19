@@ -5,7 +5,7 @@ const StyledInput = styled.input`
   outline: none;
   display: block;
   background: ${({ theme }) => theme.lightcolor};
-  width: ${({ props }) => (props ? "fit-content" : "100%")};
+  width: ${({ props }) => (props ? "250px" : "100%")};
   border: 0;
   border-radius: 4px;
   box-sizing: border-box;
@@ -45,6 +45,7 @@ const Input = ({
   newExpenses,
   category,
   option,
+  required,
 }) => {
   return (
     <>
@@ -60,6 +61,7 @@ const Input = ({
             props={secondary}
             list={list}
             autocomplete="off"
+            required={required}
           />
           {newExpenses ? (
             <StyledDataList id={list}>
@@ -93,6 +95,7 @@ const Input = ({
             onBlur={onBlur}
             value={value}
             props={secondary}
+            required={required}
           />
           <StyledLabel htmlFor={id}>{title}</StyledLabel>
         </>

@@ -14,3 +14,5 @@ export const SELECT_ACCOUNT = "SELECT_ACCOUNT";
 export const CLOSE_MINI_MODAL = "CLOSE_MINI_MODAL";
 export const ADD_ACCOUNT = "ADD_ACCOUNT";
 export const ADD_EXPENSE = "ADD_EXPENSE";
+export const EDIT_ACCOUNT = "EDIT_ACCOUNT";
+export const REMOVE_ACCOUNT = "REMOVE_ACCOUNT";

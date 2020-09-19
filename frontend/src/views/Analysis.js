@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserPageTemplate from "../templates/UserPageTemplate";
 import AnalysisSidebar from "../components/AnalysisSidebar/AnalysisSidebar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import MiniModal from "../components/MiniModal/MiniModal";
 
@@ -10,6 +10,7 @@ import DataExpenses from "../components/DataExpenses/DataExpenses";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import OptionWrapper from "../components/atoms/OptionWrapper";
+import { selectAccount } from "../redux/actions/analysisActions";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -29,7 +30,7 @@ const StyledAccount = styled.div`
   margin: 0 0 20px 0;
   text-align: center;
   align-items: center;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto;
 `;
 const StyledAccountSelect = styled.div`
   display: flex;
@@ -109,7 +110,7 @@ const Analysis = () => {
   }));
 
   const [active, setActive] = useState(-1);
-
+  const [selectWallet, setSelectWallet] = useState("");
   let newExpensesCategory = [];
   let newExpensesGroupCategory = [];
   let newAcc = [];
@@ -120,13 +121,12 @@ const Analysis = () => {
         category: a.category,
         quantity: 0,
         id: uuidv4(),
+        type: a.type,
       };
       newAcc.push(this[a.category]);
     }
     this[a.category].quantity += a.quantity;
   }, Object.create(null));
-
-  console.log(newAcc);
 
   expenses.forEach(function (a) {
     if (!this[a.category]) {
@@ -152,10 +152,8 @@ const Analysis = () => {
     this[a.groupCategory].quantity += a.quantity;
   }, Object.create(null));
 
-  console.log(newExpensesGroupCategory);
-  console.log(newExpensesCategory);
-
   const [newData, setnewData] = useState(expenses);
+  const [activeBar, setActiveBar] = useState(-1);
 
   const expCategoryList = newExpensesGroupCategory.filter((exp) => {
     if (exp.category === account.category) {
@@ -163,7 +161,7 @@ const Analysis = () => {
     }
   });
   let expGraphTable = [];
-  const [selectWallet, setSelectWallet] = useState("");
+
   const dataExpListIdAcc = (acc) => {
     const dataList = expenses.filter((exp) => {
       if (exp.idAccount === acc.id) {
@@ -227,13 +225,41 @@ const Analysis = () => {
       setAccCatObj(alldata);
     }
   };
+  const sumValues = (obj) => Object.values(obj).reduce((a, b) => a + b);
+  const sumAll = sumValues(accounts.map((account) => account.quantity));
+  const sumAllExp = sumValues(expenses.map((exp) => exp.quantity));
 
+  const allExp = {
+    id: uuidv4(),
+    quantity: sumAllExp,
+    category: "Wszystkie wydatki",
+    title: "Wszystkie",
+    type: "Wydatek",
+  };
+  const all = {
+    id: uuidv4(),
+    quantity: sumAll,
+    category: "Wszystkie konta",
+    title: "Wszystkie",
+  };
   console.log(account);
   console.log(accCatObj);
 
   useEffect(() => {
     setActive(-1);
   }, [account]);
+  useEffect(() => {
+    const accArray = accounts.filter((acc) => {
+      if (acc.category === account.category) {
+        return acc;
+      }
+    });
+    setAccCatObj(accArray);
+
+    if (accArray.length === 0) {
+      setAccCatObj(accounts);
+    }
+  }, [accounts]);
 
   return (
     <UserPageTemplate pageContext="analysis">
@@ -243,14 +269,19 @@ const Analysis = () => {
           newExpensesCategory={newExpensesCategory}
           selectCategoryObj={selectCategoryObj}
           selectExpensesObj={selectExpensesObj}
-          accCatObj={accCatObj}
           setSelectWallet={setSelectWallet}
           setActive={setActive}
+          all={all}
+          allExp={allExp}
+          sumAll={sumAll}
+          sumAllExp={sumAllExp}
+          setActiveBar={setActiveBar}
+          activeBar={activeBar}
         />
 
         <StyledAccountList>
           <StyledAccount>
-            <StyledAccountTitle>Typ konta</StyledAccountTitle>
+            <StyledAccountTitle>Nazwa konta</StyledAccountTitle>
             <StyledAccountSelect>
               {accCatObj.length > 0 && (
                 <>
@@ -300,6 +331,7 @@ const Analysis = () => {
               newExpensesCategory={newExpensesCategory}
               newExpensesGroupCategory={newExpensesGroupCategory}
               selectWallet={selectWallet}
+              setSelectWallet={setSelectWallet}
             />
           )}
         </StyledAccountList>

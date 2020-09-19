@@ -55,11 +55,7 @@ const OptionWrapper = ({
       <StyledAddTitle>{title}</StyledAddTitle>
       {walletCategory ? (
         <StyledIcon onClick={() => opentModal(category, title)}>
-          <FontAwesomeIcon
-            icon={icon}
-            style={{ margin: "0 10px" }}
-            secondary={secondary}
-          />
+          <FontAwesomeIcon icon={icon} style={{ margin: "0 10px" }} />
         </StyledIcon>
       ) : (
         <StyledIcon

@@ -7,11 +7,18 @@ import {
   closeMiniModal,
   addNewAccount,
   addNewExpense,
+  editAccount,
+  loadingAccount,
+  removeAccount,
+  openMiniModal,
+  openWarningModal,
+  closeWarningModal,
 } from "../../redux/actions/analysisActions";
 import { useDispatch, useSelector } from "react-redux";
 import Input from "../atoms/Input";
 import { v4 as uuidv4 } from "uuid";
 import { parse } from "@fortawesome/fontawesome-svg-core";
+import WarningModal from "../atoms/WarningModal";
 
 const StyledBackgroundWrapper = styled.div`
   background-color: grey;
@@ -26,10 +33,10 @@ const StyledBackgroundWrapper = styled.div`
 `;
 const StyledWrapper = styled.div`
   text-align: center;
-  border: 1px solid lightgrey;
+  /* border: 1px solid lightgrey;
   box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
     0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
+  border-radius: 5px; */
   width: 320px;
   display: flex;
   flex-direction: column;
@@ -47,7 +54,7 @@ const StyledWrapper = styled.div`
   }
 `;
 const StyledButtonClose = styled.span`
-  color: black;
+  color: ${({ theme }) => theme.primarycolor};
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
@@ -55,22 +62,24 @@ const StyledButtonClose = styled.span`
   text-align: end;
   width: 18px;
   position: fixed;
-  right: 2%;
+  right: 3%;
+  top: 1%;
   :hover,
   :focus {
-    color: darkgray;
+    color: ${({ theme }) => theme.lightcolor};
     text-decoration: none;
     cursor: pointer;
   }
 `;
 const StyledTitle = styled.p`
   padding-bottom: 10px;
+  font-weight: ${({ theme }) => theme.font500};
 `;
 const StyledSelect = styled.select`
   outline: none;
   display: block;
   background: ${({ theme }) => theme.lightcolor};
-  width: fit-content;
+  width: 250px;
   border: 0;
   border-radius: 4px;
   box-sizing: border-box;
@@ -81,6 +90,7 @@ const StyledSelect = styled.select`
   font-weight: ${({ theme }) => theme.font500};
   line-height: inherit;
   transition: 0.3s ease;
+  font-size: 14px;
 `;
 const StyledOption = styled.option``;
 const StyledLabel = styled.label`
@@ -103,35 +113,73 @@ const StyledRequiredText = styled.p`
 `;
 
 const MiniModal = ({
-  account,
   newAccounts,
   newExpensesCategory,
   newExpensesGroupCategory,
   selectWallet,
+  setSelectWallet,
+  account,
 }) => {
   const dispatch = useDispatch();
 
   const [required, setRequired] = useState(false);
-  const { category, accounts, expenses, title } = useSelector((store) => ({
-    category: store.analysis.category,
-    title: store.analysis.title,
-    accounts: store.analysis.accounts,
-    expenses: store.analysis.expenses,
-  }));
+  const { category, accounts, expenses, title, openWM } = useSelector(
+    (store) => ({
+      category: store.analysis.category,
+      title: store.analysis.title,
+      accounts: store.analysis.accounts,
+      expenses: store.analysis.expenses,
+      openWM: store.analysis.openWM,
+    })
+  );
 
   const submitAcc = (newAcc) => {
-    if (newAcc.title === "") {
+    if (
+      newAcc.title === "" ||
+      newAcc.category === "" ||
+      newAcc.quantity === "" ||
+      newAcc.type === "" ||
+      newAcc.type === "Wybierz"
+    ) {
+      console.log(newAcc);
       setRequired(true);
       return false;
     } else {
+      console.log(newAcc.category);
       newAcc.quantity = parseInt(newAcc.quantity);
-      dispatch(addNewAccount(newAcc));
+      if (selectWallet) {
+        dispatch(editAccount(newAcc));
+        console.log(newAcc);
+      } else {
+        dispatch(addNewAccount(newAcc));
+      }
+      setSelectWallet(newWallet);
       dispatch(closeMiniModal());
     }
   };
 
+  const warningModalOpen = () => {
+    dispatch(openWarningModal());
+  };
+  const warningModalClose = () => {
+    dispatch(closeWarningModal());
+  };
+
+  const removeAcc = (removeAcc) => {
+    dispatch(removeAccount(removeAcc));
+    dispatch(closeWarningModal());
+    dispatch(closeMiniModal());
+  };
+
   const submitExp = (newExp) => {
-    if (newExp.title === "") {
+    if (
+      newExp.title === "" ||
+      newExp.category === "" ||
+      newExp.groupCategory === "" ||
+      newExp.quantity === "" ||
+      newExp.idAccount === "" ||
+      newExp.idAccount === "Wybierz"
+    ) {
       setRequired(true);
       return false;
     } else {
@@ -144,6 +192,7 @@ const MiniModal = ({
       });
       console.log(accmap[0]);
       dispatch(addNewExpense(newExp, accmap[0]));
+
       dispatch(closeMiniModal());
       console.log(accounts);
       console.log(newWallet);
@@ -193,6 +242,7 @@ const MiniModal = ({
     });
   };
   const handleInputExpChange = (e) => {
+    console.log(e.target.value);
     setNewExp({
       ...newExp,
       [e.target.name]: e.target.value,
@@ -218,6 +268,9 @@ const MiniModal = ({
               value={newWallet.title}
               onChange={handleInputWalletChange}
             />
+            {required && newWallet.title === "" && (
+              <StyledRequiredText>Wpisz nazwę</StyledRequiredText>
+            )}
             <Input
               secondary
               className="required"
@@ -230,6 +283,11 @@ const MiniModal = ({
               value={newWallet.category}
               onChange={handleInputWalletChange}
             />
+            {required && newWallet.category === "" && (
+              <StyledRequiredText>
+                Wpisz lub wybierz kategorię
+              </StyledRequiredText>
+            )}
             <Input
               secondary
               className="required"
@@ -240,23 +298,63 @@ const MiniModal = ({
               value={newWallet.quantity}
               onChange={handleInputWalletChange}
             />
-            <StyledSelect onChange={handleInputWalletChange} name="type">
-              <StyledOption value="Środki bieżące">Środki bieżące</StyledOption>
-              <StyledOption value="Oszczędności">Oszczędności</StyledOption>
-            </StyledSelect>
-            <StyledLabel>Typ konta</StyledLabel>
-            <Button type="button" primary onClick={() => submitAcc(newWallet)}>
+            {required && newWallet.quantity === "" && (
+              <StyledRequiredText>Podaj ilość</StyledRequiredText>
+            )}
+            {newWallet.type !== "" && newWallet.type !== "Wybierz" ? (
+              <>
+                <StyledSelect onChange={handleInputWalletChange} name="type">
+                  <StyledOption value={newWallet.type}>
+                    {newWallet.type}
+                  </StyledOption>
+                </StyledSelect>
+                <StyledLabel>Typ konta</StyledLabel>
+              </>
+            ) : (
+              <>
+                <StyledSelect onChange={handleInputWalletChange} name="type">
+                  <StyledOption value="Wybierz">Wybierz typ konta</StyledOption>
+                  <StyledOption value="Środki bieżące">
+                    Środki bieżące
+                  </StyledOption>
+                  <StyledOption value="Oszczędności">Oszczędności</StyledOption>
+                </StyledSelect>
+                <StyledLabel>Typ konta</StyledLabel>
+
+                {required &&
+                  (newWallet.type === "" || newWallet.type === "Wybierz") && (
+                    <StyledRequiredText>Wybierz typ konta</StyledRequiredText>
+                  )}
+              </>
+            )}
+            <Button
+              width
+              type="button"
+              primary
+              onClick={() => submitAcc(newWallet)}
+            >
               {title}
             </Button>
             {title === "Edytuj konto" && (
-              <Button
-                secondary
-                primary
-                type="button"
-                onClick={() => submitAcc(newWallet)}
-              >
-                Usuń konto
-              </Button>
+              <>
+                <Button
+                  width
+                  secondary
+                  primary
+                  type="button"
+                  onClick={() => warningModalOpen()}
+                >
+                  Usuń konto
+                </Button>
+                {openWM && (
+                  <WarningModal
+                    title="Czy na pewno chcesz usunąć konto?"
+                    removeAcc={removeAcc}
+                    newWallet={newWallet}
+                    warningModalClose={warningModalClose}
+                  />
+                )}
+              </>
             )}
           </>
         ) : (
@@ -276,7 +374,7 @@ const MiniModal = ({
               value={newExp.category}
               onChange={handleInputExpChange}
             />
-            {required && newExp.title === "" && (
+            {required && newExp.category === "" && (
               <StyledRequiredText>
                 Wpisz lub wybierz kategorie
               </StyledRequiredText>
@@ -295,6 +393,11 @@ const MiniModal = ({
               category={newExp.category}
               onChange={handleInputExpChange}
             />
+            {required && newExp.groupCategory === "" && (
+              <StyledRequiredText>
+                Wpisz lub wybierz podkategorie
+              </StyledRequiredText>
+            )}
             <Input
               secondary
               className="required"
@@ -305,6 +408,9 @@ const MiniModal = ({
               value={newExp.title}
               onChange={handleInputExpChange}
             />
+            {required && newExp.title === "" && (
+              <StyledRequiredText>Wpisz nazwę</StyledRequiredText>
+            )}
             <Input
               secondary
               className="required"
@@ -315,13 +421,26 @@ const MiniModal = ({
               value={newExp.quantity}
               onChange={handleInputExpChange}
             />
-
-            <StyledSelect onChange={handleInputExpChange} name="idAccount">
+            {required && newExp.quantity === "" && (
+              <StyledRequiredText>Wpisz kwotę</StyledRequiredText>
+            )}
+            <StyledSelect
+              onChange={handleInputExpChange}
+              name="idAccount"
+              required="required"
+              className="required"
+              title="Wybierz konto"
+            >
+              <StyledOption value="Wybierz">Wybierz konto</StyledOption>
               {accounts.map((acc) => (
                 <StyledOption value={acc.id}>{acc.title}</StyledOption>
               ))}
             </StyledSelect>
             <StyledLabel>Konto</StyledLabel>
+            {required &&
+              (newExp.idAccount === "" || newExp.idAccount === "Wybierz") && (
+                <StyledRequiredText>Wybierz konto</StyledRequiredText>
+              )}
             <Button type="button" primary onClick={() => submitExp(newExp)}>
               {title}
             </Button>

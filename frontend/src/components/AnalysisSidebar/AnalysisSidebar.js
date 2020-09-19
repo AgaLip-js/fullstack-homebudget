@@ -23,6 +23,12 @@ const AnalysisSidebar = ({
   selectCategoryObj,
   selectExpensesObj,
   setSelectWallet,
+  all,
+  allExp,
+  sumAll,
+  sumAllExp,
+  setActiveBar,
+  activeBar,
 }) => {
   const { accounts, account, select, open, expenses } = useSelector(
     (store) => ({
@@ -34,24 +40,6 @@ const AnalysisSidebar = ({
     })
   );
 
-  const sumValues = (obj) => Object.values(obj).reduce((a, b) => a + b);
-  const sumAll = sumValues(accounts.map((account) => account.quantity));
-  const sumAllExp = sumValues(expenses.map((exp) => exp.quantity));
-
-  const allExp = {
-    id: uuidv4(),
-    quantity: sumAllExp,
-    category: "Wszystkie wydatki",
-    title: "Wszystkie",
-    type: "Wydatek",
-  };
-  const all = {
-    id: uuidv4(),
-    quantity: sumAll,
-    category: "Wszystkie konta",
-    title: "Wszystkie",
-  };
-  const [activeBar, setActiveBar] = useState(-1);
   const dispatch = useDispatch();
 
   const selectAcc = (account, accounts) => {

@@ -9,6 +9,8 @@ const bcrypt = require("bcrypt");
 const authorization = require("./middleware/authorization");
 const passport = require("passport");
 var session = require("express-session");
+const accounts = require("./middleware/accounts");
+const expenses = require("./middleware/expenses");
 const compression = require("compression");
 
 const ENV = process.env.NODE_ENV;
@@ -87,6 +89,8 @@ app.get("/user/dashboard", authorization, async (req, res) => {
     res.status(500).json("server Error");
   }
 });
+app.use("/", accounts);
+app.use("/", expenses);
 
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));

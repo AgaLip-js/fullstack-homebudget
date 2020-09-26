@@ -70,7 +70,7 @@ const DataExpenses = ({
                   <StyledColumn>{data.date} </StyledColumn>
                   <StyledColumn>{data.title} </StyledColumn>
                   <StyledColumn>{data.category} </StyledColumn>
-                  <StyledColumn>{data.groupCategory} </StyledColumn>
+                  <StyledColumn>{data.groupcategory} </StyledColumn>
                   <StyledColumn>{data.quantity} </StyledColumn>
                 </StyledGrid>
               );
@@ -95,7 +95,7 @@ const DataExpenses = ({
                   <>
                     <StyledGrid primary key={data.id}>
                       <StyledColumn>{data.category} </StyledColumn>
-                      <StyledColumn>{data.groupCategory} </StyledColumn>
+                      <StyledColumn>{data.groupcategory} </StyledColumn>
                       <StyledColumn>{data.quantity} </StyledColumn>
                     </StyledGrid>
                   </>
@@ -118,7 +118,7 @@ const DataExpenses = ({
               return (
                 <StyledGrid primary key={data.id}>
                   <StyledColumn>{data.category} </StyledColumn>
-                  <StyledColumn>{data.groupCategory} </StyledColumn>
+                  <StyledColumn>{data.groupcategory} </StyledColumn>
                   <StyledColumn>{data.quantity} </StyledColumn>
                 </StyledGrid>
               );
@@ -146,7 +146,7 @@ const DataExpenses = ({
                   <StyledColumn>{data.date} </StyledColumn>
                   <StyledColumn>{data.title} </StyledColumn>
                   <StyledColumn>{data.category} </StyledColumn>
-                  <StyledColumn>{data.groupCategory} </StyledColumn>
+                  <StyledColumn>{data.groupcategory} </StyledColumn>
                   <StyledColumn>{data.quantity} </StyledColumn>
                 </StyledGrid>
               );

@@ -4,12 +4,13 @@ const app = express.Router();
 
 app.post("/accounts", async (req, res) => {
   try {
-    const { title, category, quantity, date, type, user_id } = req.body;
+    const { title, category, quantity, type, date, user_id } = req.body;
     const newAccount = await pool.query(
-      "INSERT INTO accounts (title, category, quantity, date, type, user_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *",
-      [title, category, quantity, date, type, user_id]
+      "INSERT INTO accounts (title, category, quantity, type, date, user_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *",
+      [title, category, quantity, type, date, user_id]
     );
-    res.json(newTodo.rows[0]);
+    console.log(newAccount.rows[0]);
+    res.json(newAccount.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
@@ -57,11 +58,11 @@ app.get("/accounts/:id", async (req, res) => {
 app.put("/accounts/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { title } = req.body;
+    const { title, quantity, category, date, type } = req.body;
 
     const updateAccount = await pool.query(
-      "UPDATE accounts SET title = $1 WHERE id = $2",
-      [title, id]
+      "UPDATE accounts SET (title, quantity, category, date, type) = ($1, $2, $3, $4, $5) WHERE id = $6",
+      [title, quantity, category, date, type, id]
     );
     res.json("Account was updated");
   } catch (err) {

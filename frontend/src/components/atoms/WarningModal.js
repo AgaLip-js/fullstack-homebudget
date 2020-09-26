@@ -43,7 +43,7 @@ const WarningModal = ({ title, removeAcc, warningModalClose, newWallet }) => {
       <StyledContainer>
         <StyledTitle>{title}</StyledTitle>
         <StyledHeader>
-          <Button primary onClick={() => removeAcc(newWallet)}>
+          <Button primary onClick={() => removeAcc(newWallet.id)}>
             Tak
           </Button>
           <Button primary onClick={warningModalClose}>

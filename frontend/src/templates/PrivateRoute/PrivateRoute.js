@@ -4,9 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { loadUser } from "../../redux/actions/authActions";
 import store from "../../redux/store/store";
+import {
+  loadingAccounts,
+  loadingExpenses,
+} from "../../redux/actions/analysisActions";
 
-const getComponentByState = (Component, authState, props) => {
-  if (authState.isLoading) {
+const getComponentByState = (Component, authState, analysis, props) => {
+  if (authState.isLoading || analysis.isLoadingAcc || analysis.isLoadingExp) {
     return <p>...Loading</p>;
   } else if (!authState.isLoading && authState.isAuthenticated) {
     return (
@@ -27,11 +31,20 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
   const { auth } = useSelector((store) => ({
     auth: store.auth,
   }));
+  const { analysis } = useSelector((store) => ({
+    analysis: store.analysis,
+  }));
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(loadingAccounts(auth.user.id));
+      dispatch(loadingExpenses(auth.user.id));
+    }, 100);
+  }, [auth.user.id]);
 
   return (
     <Route
       {...rest}
-      render={(props) => getComponentByState(Component, auth, props)}
+      render={(props) => getComponentByState(Component, auth, analysis, props)}
     />
   );
 };

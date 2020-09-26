@@ -132,6 +132,9 @@ const MiniModal = ({
       openWM: store.analysis.openWM,
     })
   );
+  const { auth } = useSelector((store) => ({
+    auth: store.auth,
+  }));
 
   const submitAcc = (newAcc) => {
     if (
@@ -148,9 +151,10 @@ const MiniModal = ({
       console.log(newAcc.category);
       newAcc.quantity = parseInt(newAcc.quantity);
       if (selectWallet) {
-        dispatch(editAccount(newAcc));
         console.log(newAcc);
+        dispatch(editAccount(newAcc.id, newAcc));
       } else {
+        console.log(newAcc);
         dispatch(addNewAccount(newAcc));
       }
       setSelectWallet(newWallet);
@@ -175,27 +179,29 @@ const MiniModal = ({
     if (
       newExp.title === "" ||
       newExp.category === "" ||
-      newExp.groupCategory === "" ||
+      newExp.groupcategory === "" ||
       newExp.quantity === "" ||
-      newExp.idAccount === "" ||
-      newExp.idAccount === "Wybierz"
+      newExp.idaccount === "" ||
+      newExp.idaccount === "Wybierz"
     ) {
       setRequired(true);
       return false;
     } else {
       newExp.quantity = parseInt(newExp.quantity);
+      newExp.idaccount = parseInt(newExp.idaccount);
       const accmap = accounts.filter((account) => {
-        if (account.id === newExp.idAccount) {
+        if (account.id === newExp.idaccount) {
           account.quantity = account.quantity - newExp.quantity;
           return account;
         }
       });
+      console.log(accmap);
       console.log(accmap[0]);
       dispatch(addNewExpense(newExp, accmap[0]));
 
       dispatch(closeMiniModal());
       console.log(accounts);
-      console.log(newWallet);
+      console.log(newExp);
     }
   };
 
@@ -217,18 +223,19 @@ const MiniModal = ({
     category: selectWallet ? selectWallet.category : "",
     quantity: selectWallet ? selectWallet.quantity : "",
     date: addDate,
-    id: selectWallet ? selectWallet.id : uuidv4(),
+    id: selectWallet && selectWallet.id,
     type: selectWallet ? selectWallet.type : "",
+    user_id: selectWallet ? selectWallet.user_id : auth.user.id,
   };
   const newExpense = {
-    id: account ? account.id : uuidv4(),
     date: addDate,
-    idAccount: account ? account.idAccount : "",
+    idaccount: account ? account.idaccount : "",
     quantity: account ? account.quantity : "",
     category: account ? account.category : "",
-    groupCategory: account ? account.groupCategory : "",
+    groupcategory: account ? account.groupcategory : "",
     title: account ? account.title : "",
     type: "Wydatek",
+    user_id: account ? account.user_id : auth.user.id,
   };
   const [newWallet, setNewWallet] = useState(newAccount);
   const [newExp, setNewExp] = useState(newExpense);
@@ -242,7 +249,6 @@ const MiniModal = ({
     });
   };
   const handleInputExpChange = (e) => {
-    console.log(e.target.value);
     setNewExp({
       ...newExp,
       [e.target.name]: e.target.value,
@@ -386,14 +392,14 @@ const MiniModal = ({
               type="text"
               required="required"
               title="Podgrupa wydatku"
-              name="groupCategory"
+              name="groupcategory"
               option=""
               newExpenses={newExpensesGroupCategory}
-              value={newExp.groupCategory}
+              value={newExp.groupcategory}
               category={newExp.category}
               onChange={handleInputExpChange}
             />
-            {required && newExp.groupCategory === "" && (
+            {required && newExp.groupcategory === "" && (
               <StyledRequiredText>
                 Wpisz lub wybierz podkategorie
               </StyledRequiredText>
@@ -426,7 +432,7 @@ const MiniModal = ({
             )}
             <StyledSelect
               onChange={handleInputExpChange}
-              name="idAccount"
+              name="idaccount"
               required="required"
               className="required"
               title="Wybierz konto"
@@ -438,7 +444,7 @@ const MiniModal = ({
             </StyledSelect>
             <StyledLabel>Konto</StyledLabel>
             {required &&
-              (newExp.idAccount === "" || newExp.idAccount === "Wybierz") && (
+              (newExp.idaccount === "" || newExp.idaccount === "Wybierz") && (
                 <StyledRequiredText>Wybierz konto</StyledRequiredText>
               )}
             <Button type="button" primary onClick={() => submitExp(newExp)}>

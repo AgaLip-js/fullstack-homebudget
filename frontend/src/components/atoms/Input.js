@@ -68,8 +68,8 @@ const Input = ({
               {newExpenses.map((acc) =>
                 acc.category === category ? (
                   <StyledOption
-                    value={acc.groupCategory}
-                    name="groupCategory"
+                    value={acc.groupcategory}
+                    name="groupcategory"
                   ></StyledOption>
                 ) : (
                   <StyledOption value={acc[option]}></StyledOption>

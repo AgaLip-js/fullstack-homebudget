@@ -109,6 +109,9 @@ const Analysis = () => {
     open: store.analysis.open,
   }));
 
+  console.log(accounts);
+  console.log(expenses);
+
   const [active, setActive] = useState(-1);
   const [selectWallet, setSelectWallet] = useState("");
   let newExpensesCategory = [];
@@ -138,18 +141,18 @@ const Analysis = () => {
       };
       newExpensesCategory.push(this[a.category]);
     }
-    if (!this[a.groupCategory]) {
-      this[a.groupCategory] = {
+    if (!this[a.groupcategory]) {
+      this[a.groupcategory] = {
         category: a.category,
-        groupCategory: a.groupCategory,
+        groupcategory: a.groupcategory,
         quantity: 0,
         type: "Wydatek",
         id: uuidv4(),
       };
-      newExpensesGroupCategory.push(this[a.groupCategory]);
+      newExpensesGroupCategory.push(this[a.groupcategory]);
     }
     this[a.category].quantity += a.quantity;
-    this[a.groupCategory].quantity += a.quantity;
+    this[a.groupcategory].quantity += a.quantity;
   }, Object.create(null));
 
   const [newData, setnewData] = useState(expenses);
@@ -164,7 +167,7 @@ const Analysis = () => {
 
   const dataExpListIdAcc = (acc) => {
     const dataList = expenses.filter((exp) => {
-      if (exp.idAccount === acc.id) {
+      if (exp.idaccount === acc.id) {
         return exp;
       }
     });
@@ -173,16 +176,16 @@ const Analysis = () => {
     setnewData(dataList);
   };
   newData.forEach(function (a) {
-    if (!this[a.groupCategory]) {
-      this[a.groupCategory] = {
-        groupCategory: a.groupCategory,
+    if (!this[a.groupcategory]) {
+      this[a.groupcategory] = {
+        groupcategory: a.groupcategory,
         quantity: 0,
         id: uuidv4(),
         category: a.category,
       };
-      expGraphTable.push(this[a.groupCategory]);
+      expGraphTable.push(this[a.groupcategory]);
     }
-    this[a.groupCategory].quantity += a.quantity;
+    this[a.groupcategory].quantity += a.quantity;
   }, Object.create(null));
 
   const [accCatObj, setAccCatObj] = useState(accounts);
@@ -201,7 +204,7 @@ const Analysis = () => {
     const accountIds = accArray.map((e) => e.id);
     if (accountIds.length !== 0) {
       console.log(accountIds);
-      const alldata = expenses.filter((e) => accountIds.includes(e.idAccount));
+      const alldata = expenses.filter((e) => accountIds.includes(e.idaccount));
       setnewData(alldata);
     } else if (account.title === "Wszystkie") {
       setnewData(expenses);
@@ -218,7 +221,7 @@ const Analysis = () => {
     });
     setnewData(accArray);
 
-    const accountIds = accArray.map((e) => e.idAccount);
+    const accountIds = accArray.map((e) => e.idaccount);
     console.log(accountIds);
     if (accountIds.length !== 0) {
       const alldata = accounts.filter((e) => accountIds.includes(e.id));
@@ -226,8 +229,14 @@ const Analysis = () => {
     }
   };
   const sumValues = (obj) => Object.values(obj).reduce((a, b) => a + b);
-  const sumAll = sumValues(accounts.map((account) => account.quantity));
-  const sumAllExp = sumValues(expenses.map((exp) => exp.quantity));
+
+  const sumAll =
+    accounts.length === 0
+      ? 0
+      : sumValues(accounts.map((account) => account.quantity));
+
+  const sumAllExp =
+    expenses.length === 0 ? 0 : sumValues(expenses.map((exp) => exp.quantity));
 
   const allExp = {
     id: uuidv4(),
@@ -259,7 +268,14 @@ const Analysis = () => {
     if (accArray.length === 0) {
       setAccCatObj(accounts);
     }
-  }, [accounts]);
+    const expArray = expenses.filter((acc) => {
+      if (acc.category === account.category) {
+        return acc;
+      }
+    });
+    setnewData(expArray);
+    console.log(newData);
+  }, [accounts, expenses]);
 
   return (
     <UserPageTemplate pageContext="analysis">

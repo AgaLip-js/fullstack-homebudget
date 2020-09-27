@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { openMiniModal } from "../../redux/actions/analysisActions";
 
@@ -38,10 +38,6 @@ const OptionWrapper = ({
   walletCategory,
   setSelectWallet,
 }) => {
-  const { open } = useSelector((store) => ({
-    open: store.analysis.open,
-  }));
-
   const dispatch = useDispatch();
   const opentModal = (category, title) => {
     dispatch(openMiniModal(category, title));

@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import { loadUser } from "../../redux/actions/authActions";
-import store from "../../redux/store/store";
 import {
   loadingAccounts,
   loadingExpenses,
@@ -28,18 +26,21 @@ const getComponentByState = (Component, authState, analysis, props) => {
 
 export const PrivateRoute = ({ component: Component, ...rest }) => {
   const dispatch = useDispatch();
-  const { auth } = useSelector((store) => ({
+  const { auth, analysis } = useSelector((store) => ({
     auth: store.auth,
-  }));
-  const { analysis } = useSelector((store) => ({
     analysis: store.analysis,
   }));
+
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       dispatch(loadingAccounts(auth.user.id));
       dispatch(loadingExpenses(auth.user.id));
     }, 100);
-  }, [auth.user.id]);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [auth.user.id, dispatch]);
 
   return (
     <Route

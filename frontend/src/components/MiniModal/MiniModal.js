@@ -8,16 +8,12 @@ import {
   addNewAccount,
   addNewExpense,
   editAccount,
-  loadingAccount,
   removeAccount,
-  openMiniModal,
   openWarningModal,
   closeWarningModal,
 } from "../../redux/actions/analysisActions";
 import { useDispatch, useSelector } from "react-redux";
 import Input from "../atoms/Input";
-import { v4 as uuidv4 } from "uuid";
-import { parse } from "@fortawesome/fontawesome-svg-core";
 import WarningModal from "../atoms/WarningModal";
 
 const StyledBackgroundWrapper = styled.div`
@@ -123,16 +119,11 @@ const MiniModal = ({
   const dispatch = useDispatch();
 
   const [required, setRequired] = useState(false);
-  const { category, accounts, expenses, title, openWM } = useSelector(
-    (store) => ({
-      category: store.analysis.category,
-      title: store.analysis.title,
-      accounts: store.analysis.accounts,
-      expenses: store.analysis.expenses,
-      openWM: store.analysis.openWM,
-    })
-  );
-  const { auth } = useSelector((store) => ({
+  const { category, accounts, title, openWM, auth } = useSelector((store) => ({
+    category: store.analysis.category,
+    title: store.analysis.title,
+    accounts: store.analysis.accounts,
+    openWM: store.analysis.openWM,
     auth: store.auth,
   }));
 
@@ -194,14 +185,11 @@ const MiniModal = ({
           account.quantity = account.quantity - newExp.quantity;
           return account;
         }
+        return null;
       });
-      console.log(accmap);
-      console.log(accmap[0]);
       dispatch(addNewExpense(newExp, accmap[0]));
 
       dispatch(closeMiniModal());
-      console.log(accounts);
-      console.log(newExp);
     }
   };
 
@@ -239,8 +227,6 @@ const MiniModal = ({
   };
   const [newWallet, setNewWallet] = useState(newAccount);
   const [newExp, setNewExp] = useState(newExpense);
-  const [idAcc, setIdAcc] = useState("");
-  console.log(selectWallet);
 
   const handleInputWalletChange = (e) => {
     setNewWallet({

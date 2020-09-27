@@ -3,8 +3,8 @@ import { Formik } from "formik";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import styled from "styled-components";
-import store from "../../redux/store/store";
 import { login } from "../../redux/actions/authActions";
+import { useDispatch } from "react-redux";
 
 const StyledForm = styled.form`
   position: relative;
@@ -24,6 +24,8 @@ const StyledFormControl = styled.div`
 `;
 
 const LoginForm = ({ title }) => {
+  const dispatch = useDispatch();
+
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
@@ -33,7 +35,7 @@ const LoginForm = ({ title }) => {
           password: values.password,
         };
 
-        store.dispatch(login(user));
+        dispatch(login(user));
         setSubmitting(false);
       }}
     >

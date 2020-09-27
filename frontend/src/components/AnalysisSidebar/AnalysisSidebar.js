@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
-import { useSelector, useDispatch } from "react-redux";
-import {
-  selectAccount,
-  openMiniModal,
-} from "../../redux/actions/analysisActions";
-import { v4 as uuidv4 } from "uuid";
+import { useDispatch } from "react-redux";
+import { selectAccount } from "../../redux/actions/analysisActions";
 import AccountsList from "../AccountsList/AccountsList";
 
 const StyledWalletNavbar = styled.div`
@@ -30,16 +26,6 @@ const AnalysisSidebar = ({
   setActiveBar,
   activeBar,
 }) => {
-  const { accounts, account, select, open, expenses } = useSelector(
-    (store) => ({
-      accounts: store.analysis.accounts,
-      account: store.analysis.account,
-      select: store.analysis.select,
-      open: store.analysis.open,
-      expenses: store.analysis.expenses,
-    })
-  );
-
   const dispatch = useDispatch();
 
   const selectAcc = (account, accounts) => {

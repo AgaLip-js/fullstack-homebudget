@@ -70,7 +70,6 @@ const RegisterForm = ({ title }) => {
         handleBlur,
         handleSubmit,
         isSubmitting,
-        /* and other goodies */
       }) => (
         <StyledForm onSubmit={handleSubmit}>
           <StyledTitle>{title}</StyledTitle>

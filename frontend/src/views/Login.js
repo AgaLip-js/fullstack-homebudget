@@ -19,18 +19,19 @@ const StyledLoginContent = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 const StyledLoginImg = styled.img`
   width: 400px;
   margin: 0 50px;
 `;
-const Login = () => {
 
+const Login = () => {
   const { auth } = useSelector((store) => ({
     auth: store.auth,
   }));
 
-  if(auth.isAuthenticated){
-    return <Redirect to="/dashboard/summary"/>
+  if (auth.isAuthenticated) {
+    return <Redirect to="/dashboard/summary" />;
   }
 
   return (

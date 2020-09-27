@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import HeaderTitle from "../atoms/HeaderTitle";
-import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
-import OptionWrapper from "../atoms/OptionWrapper";
 
 const StyledWrapper = styled.div`
   height: fit-content;
@@ -17,36 +15,16 @@ const StyledGridHeader = styled.div`
   color: white;
   padding: 10px 0;
 `;
-const StyledGridHeaderAll = styled(StyledGridHeader)`
-  grid-template-columns: repeat(2, 1fr);
-`;
 const StyledGrid = styled(StyledGridHeader)`
   background: white;
 `;
-const StyledGridAll = styled(StyledGridHeaderAll)`
-  background: white;
-`;
+
 const StyledColumn = styled.div`
   color: ${({ primary }) => (primary ? "white" : "black")};
 `;
-const StyledGraphTitle = styled.h4`
-  text-align: start;
-  font-size: 18px;
-  color: #1383c5;
-  font-weight: 700;
-  padding: 0 20px;
-`;
 
-const DataExpenses = ({
-  newData,
-  expCategoryList,
-  newExpensesCategory,
-  expGraphTable,
-  active,
-}) => {
-  const { accounts, expenses, account } = useSelector((store) => ({
-    accounts: store.analysis.accounts,
-    expenses: store.analysis.expenses,
+const DataExpenses = ({ newData, expCategoryList, expGraphTable }) => {
+  const { account } = useSelector((store) => ({
     account: store.analysis.account,
   }));
 
@@ -101,6 +79,7 @@ const DataExpenses = ({
                   </>
                 );
               }
+              return null;
             })}
           </StyledWrapper>
         )}
@@ -151,6 +130,7 @@ const DataExpenses = ({
                 </StyledGrid>
               );
             }
+            return null;
           })}
         </StyledWrapper>
       )}

@@ -1,13 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import {
-  faPenAlt,
-  faPencilAlt,
-  faPlusCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { openMiniModal } from "../../redux/actions/analysisActions";
+import { useSelector } from "react-redux";
 import OptionWrapper from "../atoms/OptionWrapper";
 
 const StyledFirstSection = styled.div`
@@ -19,16 +13,6 @@ const StyledFirstSection = styled.div`
   cursor: pointer;
   font-weight: ${({ active }) => (active ? "600" : "400")};
   color: ${({ active }) => (active ? "#05273B" : "white")};
-`;
-const StyledOptionWrapper = styled.div`
-  background: ${({ theme }) => theme.lightcolor};
-  color: black;
-  border-radius: 10px;
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 0;
 `;
 const StyledSection = styled.div`
   display: flex;
@@ -44,16 +28,6 @@ const StyledParagraph = styled.p`
   font-size: ${({ primary }) => (primary ? "16px" : "14px")};
 `;
 const StyledQuantity = styled(StyledParagraph)``;
-const StyledIcon = styled.span`
-  cursor: pointer;
-  color: black;
-  font-size: 18px;
-  margin-left: 10px;
-`;
-const StyledAddTitle = styled.p`
-  font-size: 12px;
-  padding: 0 10px;
-`;
 
 const AccountsList = ({
   selectAcc,
@@ -68,9 +42,8 @@ const AccountsList = ({
   selectExp,
   setSelectWallet,
 }) => {
-  const { accounts, open, expenses } = useSelector((store) => ({
+  const { accounts, expenses } = useSelector((store) => ({
     accounts: store.analysis.accounts,
-    open: store.analysis.open,
     expenses: store.analysis.expenses,
   }));
 

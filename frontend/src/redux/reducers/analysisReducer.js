@@ -1,14 +1,16 @@
-import { EDIT_ACCOUNT, OPEN_MINIMODAL, REMOVE_ACCOUNT } from "../actions";
-import { SELECT_ACCOUNT } from "../actions";
-import { initialAccounts } from "../../templates/initialAccounts";
-import { CLOSE_MINI_MODAL, ADD_ACCOUNT, ADD_EXPENSE } from "../actions";
-import { initialExpenses } from "../../templates/initialExpenses";
 import {
   CLOSE_WARNINGMODAL,
   LOADING_ACCOUNTS,
   OPEN_WARNINGMODAL,
   LOADING_EXPENSES,
-} from "../actions/analysisActions";
+  EDIT_ACCOUNT,
+  OPEN_MINIMODAL,
+  REMOVE_ACCOUNT,
+  SELECT_ACCOUNT,
+  CLOSE_MINI_MODAL,
+  ADD_ACCOUNT,
+  ADD_EXPENSE,
+} from "../actions";
 
 const initialState = {
   accounts: [],
@@ -105,11 +107,13 @@ const analysisReducer = (state = initialState, action) => {
           if (acc.id !== action.payload.id) {
             return acc;
           }
+          return null;
         }),
         expenses: state.expenses.filter((exp) => {
           if (exp.idaccount !== action.payload.id) {
             return exp;
           }
+          return null;
         }),
       };
     }

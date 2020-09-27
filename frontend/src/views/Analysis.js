@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import UserPageTemplate from "../templates/UserPageTemplate";
 import AnalysisSidebar from "../components/AnalysisSidebar/AnalysisSidebar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import MiniModal from "../components/MiniModal/MiniModal";
 
 import { v4 as uuidv4 } from "uuid";
 import DataExpenses from "../components/DataExpenses/DataExpenses";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import OptionWrapper from "../components/atoms/OptionWrapper";
-import { selectAccount } from "../redux/actions/analysisActions";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -58,21 +56,7 @@ const StyledGridCategory = styled.div`
   position: relative;
   z-index: 3;
 `;
-const StyledExpensesList = styled.div`
-  display: grid;
-  width: 100%;
-  margin: 0 0 20px 0;
-  text-align: center;
-  align-items: center;
-  grid-template-rows: auto auto;
-  justify-content: center;
-`;
-const StyledExpensestTitle = styled.h4`
-  text-align: center;
-  font-size: 18px;
-  color: #1383c5;
-  font-weight: 700;
-`;
+
 const StyledObject = styled.div`
   position: relative;
 `;
@@ -95,22 +79,12 @@ const StyledOptionWrapper = styled.div`
 `;
 
 const Analysis = () => {
-  const { accounts, expenses } = useSelector((store) => ({
-    accounts: store.analysis.accounts,
-    expenses: store.analysis.expenses,
+  const { accounts, expenses, account, open } = useSelector(({ analysis }) => ({
+    accounts: analysis.accounts,
+    expenses: analysis.expenses,
+    account: analysis.account,
+    open: analysis.open,
   }));
-  const { account, select, title } = useSelector((store) => ({
-    account: store.analysis.account,
-    title: store.analysis.title,
-    select: store.analysis.select,
-  }));
-
-  const { open } = useSelector((store) => ({
-    open: store.analysis.open,
-  }));
-
-  console.log(accounts);
-  console.log(expenses);
 
   const [active, setActive] = useState(-1);
   const [selectWallet, setSelectWallet] = useState("");
@@ -156,12 +130,12 @@ const Analysis = () => {
   }, Object.create(null));
 
   const [newData, setnewData] = useState(expenses);
-  const [activeBar, setActiveBar] = useState(-1);
 
   const expCategoryList = newExpensesGroupCategory.filter((exp) => {
     if (exp.category === account.category) {
       return exp;
     }
+    return null;
   });
   let expGraphTable = [];
 
@@ -170,6 +144,7 @@ const Analysis = () => {
       if (exp.idaccount === acc.id) {
         return exp;
       }
+      return null;
     });
     setSelectWallet(acc);
     setActive(acc.id);
@@ -195,6 +170,7 @@ const Analysis = () => {
       if (acc.category === account.category) {
         return acc;
       }
+      return null;
     });
     setAccCatObj(accArray);
     if (accArray.length === 0) {
@@ -218,11 +194,11 @@ const Analysis = () => {
       if (acc.category === account.category) {
         return acc;
       }
+      return null;
     });
     setnewData(accArray);
 
     const accountIds = accArray.map((e) => e.idaccount);
-    console.log(accountIds);
     if (accountIds.length !== 0) {
       const alldata = accounts.filter((e) => accountIds.includes(e.id));
       setAccCatObj(alldata);
@@ -251,6 +227,7 @@ const Analysis = () => {
     category: "Wszystkie konta",
     title: "Wszystkie",
   };
+  const [activeBar, setActiveBar] = useState(all.category);
   console.log(account);
   console.log(accCatObj);
 
@@ -262,18 +239,24 @@ const Analysis = () => {
       if (acc.category === account.category) {
         return acc;
       }
+      return null;
     });
     setAccCatObj(accArray);
-
     if (accArray.length === 0) {
       setAccCatObj(accounts);
     }
-    const expArray = expenses.filter((acc) => {
-      if (acc.category === account.category) {
-        return acc;
+    const expArray = expenses.filter((exp) => {
+      if (exp.idaccount === selectWallet.id) {
+        return exp;
       }
+      return null;
     });
+
     setnewData(expArray);
+    if (expArray.length === 0) {
+      setnewData(expenses);
+    }
+    console.log(selectWallet);
     console.log(newData);
   }, [accounts, expenses]);
 
@@ -302,32 +285,29 @@ const Analysis = () => {
               {accCatObj.length > 0 && (
                 <>
                   {accCatObj.map((obj) => {
-                    if (obj) {
-                      return (
-                        <>
-                          <StyledGridCategory
-                            key={obj.id}
-                            active={active === obj.id}
-                            onClick={() => dataExpListIdAcc(obj)}
-                          >
-                            {obj.title}
-                          </StyledGridCategory>
-                          {selectWallet !== "" &&
-                            active === obj.id &&
-                            account.type !== "Wydatek" && (
-                              <StyledOptionWrapper>
-                                <OptionWrapper
-                                  title="Edytuj konto"
-                                  icon={faPencilAlt}
-                                  walletCategory={selectWallet.category}
-                                  category="Konto"
-                                  secondary
-                                />
-                              </StyledOptionWrapper>
-                            )}
-                        </>
-                      );
-                    }
+                    return (
+                      <React.Fragment key={obj.id}>
+                        <StyledGridCategory
+                          active={active === obj.id}
+                          onClick={() => dataExpListIdAcc(obj)}
+                        >
+                          {obj.title}
+                        </StyledGridCategory>
+                        {selectWallet !== "" &&
+                          active === obj.id &&
+                          account.type !== "Wydatek" && (
+                            <StyledOptionWrapper>
+                              <OptionWrapper
+                                title="Edytuj konto"
+                                icon={faPencilAlt}
+                                walletCategory={selectWallet.category}
+                                category="Konto"
+                                secondary
+                              />
+                            </StyledOptionWrapper>
+                          )}
+                      </React.Fragment>
+                    );
                   })}
                 </>
               )}
@@ -336,9 +316,7 @@ const Analysis = () => {
 
           <DataExpenses
             expCategoryList={expCategoryList}
-            newExpensesCategory={newExpensesCategory}
             expGraphTable={expGraphTable}
-            active={active}
             newData={newData}
           />
           {open && (

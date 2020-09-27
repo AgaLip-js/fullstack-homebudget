@@ -1,15 +1,17 @@
 import axios from "axios";
-export const OPEN_MINIMODAL = "OPEN_MINIMODAL";
-export const SELECT_ACCOUNT = "SELECT_ACCOUNT";
-export const CLOSE_MINI_MODAL = "CLOSE_MINI_MODAL";
-export const ADD_ACCOUNT = "ADD_ACCOUNT";
-export const ADD_EXPENSE = "ADD_EXPENSE";
-export const EDIT_ACCOUNT = "EDIT_ACCOUNT";
-export const REMOVE_ACCOUNT = "REMOVE_ACCOUNT";
-export const OPEN_WARNINGMODAL = "OPEN_WARNINGMODAL";
-export const CLOSE_WARNINGMODAL = "CLOSE_WARNINGMODAL";
-export const LOADING_ACCOUNTS = "LOADING_ACCOUNTS";
-export const LOADING_EXPENSES = "LOADING_EXPENSES";
+import {
+  ADD_ACCOUNT,
+  ADD_EXPENSE,
+  CLOSE_MINI_MODAL,
+  CLOSE_WARNINGMODAL,
+  EDIT_ACCOUNT,
+  LOADING_ACCOUNTS,
+  LOADING_EXPENSES,
+  OPEN_MINIMODAL,
+  OPEN_WARNINGMODAL,
+  REMOVE_ACCOUNT,
+  SELECT_ACCOUNT,
+} from ".";
 
 export const openMiniModal = (category, title) => (dispatch) => {
   dispatch({

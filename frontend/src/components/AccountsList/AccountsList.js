@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import OptionWrapper from "../atoms/OptionWrapper";
+import {
+  getSumAccounts,
+  getSumExpenses,
+} from "../../redux/actions/aggregateFunctions";
+import { StaticRouter } from "react-router-dom";
 
 const StyledFirstSection = styled.div`
   position: relative;
@@ -33,7 +38,7 @@ const AccountsList = ({
   selectAcc,
   activeBar,
   newAccounts,
-  sumAll,
+  // sumAll,
   all,
   title,
   allExp,
@@ -42,41 +47,62 @@ const AccountsList = ({
   selectExp,
   setSelectWallet,
 }) => {
-  const { accounts, expenses } = useSelector((store) => ({
-    accounts: store.analysis.accounts,
-    expenses: store.analysis.expenses,
-  }));
+  const { accounts, expenses, sumAccounts, sumExpenses, userID } = useSelector(
+    (store) => ({
+      accounts: store.analysis.accounts,
+      expenses: store.analysis.expenses,
+      sumAccounts: store.aggregate.sumAccounts,
+      sumExpenses: store.aggregate.sumExpenses,
+      userID: store.auth.user.id,
+    })
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (userID) {
+      dispatch(getSumAccounts(userID));
+      dispatch(getSumExpenses(userID));
+    }
+  }, [dispatch, userID, accounts, expenses]);
 
-  console.log(activeBar);
+  const sumA = (array) => {
+    return array.map((a) => parseInt(a.sum)).reduce((a, b) => a + b, 0);
+  };
 
   return (
     <StyledSection>
       <StyledTitle>{title}</StyledTitle>
       {title === "Konta" ? (
         <>
-          <StyledFirstSection
-            onClick={() => {
-              selectAcc(all, accounts);
-            }}
-            active={activeBar === all.category}
-          >
-            <StyledParagraph primary>Wszystkie</StyledParagraph>
-            <StyledQuantity primary>{sumAll} PLN</StyledQuantity>
-          </StyledFirstSection>
-          {newAccounts.map((acc) => {
-            return (
+          {sumAccounts && sumAccounts.length ? (
+            <>
               <StyledFirstSection
-                key={acc.id}
                 onClick={() => {
-                  selectAcc(acc, accounts);
+                  selectAcc(all, accounts);
                 }}
-                active={activeBar === acc.category}
+                active={activeBar === all.category}
               >
-                <StyledParagraph primary>{acc.category}</StyledParagraph>
-                <StyledQuantity primary>{acc.quantity} PLN</StyledQuantity>
+                <StyledParagraph primary>Wszystkie</StyledParagraph>
+                <StyledQuantity primary>{sumA(sumAccounts)} PLN</StyledQuantity>
               </StyledFirstSection>
-            );
-          })}
+
+              {sumAccounts.map((acc) => {
+                return (
+                  <StyledFirstSection
+                    key={acc.id}
+                    onClick={() => {
+                      selectAcc(acc, accounts);
+                    }}
+                    active={activeBar === acc.category}
+                  >
+                    <StyledParagraph primary>{acc.category}</StyledParagraph>
+                    <StyledQuantity primary>{acc.sum} PLN</StyledQuantity>
+                  </StyledFirstSection>
+                );
+              })}
+            </>
+          ) : (
+            <p>...Loading</p>
+          )}
           <OptionWrapper
             icon={faPlusCircle}
             title="Dodaj konto"
@@ -96,20 +122,25 @@ const AccountsList = ({
             <StyledQuantity primary>{sumAllExp} PLN</StyledQuantity>
           </StyledFirstSection>
 
-          {newExpensesCategory.map((acc) => {
-            return (
-              <StyledFirstSection
-                key={acc.category}
-                onClick={() => {
-                  selectExp(acc, expenses);
-                }}
-                active={activeBar === acc.category}
-              >
-                <StyledParagraph primary>{acc.category}</StyledParagraph>
-                <StyledQuantity primary>{acc.quantity} PLN</StyledQuantity>
-              </StyledFirstSection>
-            );
-          })}
+          {sumExpenses && sumExpenses.length ? (
+            sumExpenses.map((acc) => {
+              return (
+                <StyledFirstSection
+                  key={acc.category}
+                  onClick={() => {
+                    selectExp(acc, expenses);
+                  }}
+                  active={activeBar === acc.category}
+                >
+                  <StyledParagraph primary>{acc.category}</StyledParagraph>
+                  <StyledQuantity primary>{acc.sum} PLN</StyledQuantity>
+                </StyledFirstSection>
+              );
+            })
+          ) : (
+            <p>Loading....</p>
+          )}
+
           <OptionWrapper
             icon={faPlusCircle}
             title="Dodaj wydatek"

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import HeaderTitle from "../atoms/HeaderTitle";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 const StyledWrapper = styled.div`
   height: fit-content;
@@ -11,23 +13,34 @@ const StyledGridHeader = styled.div`
   grid-template-columns: ${({ primary }) =>
     primary ? "repeat(3, 1fr)" : "repeat(5, 1fr)"};
   text-align: center;
-  background: #1383c5;
-  color: white;
+  background: ${({ theme }) => theme.primarycolor};
+  color: ${({ theme }) => theme.whitecolor};
   padding: 10px 0;
 `;
 const StyledGrid = styled(StyledGridHeader)`
-  background: white;
+  background: ${({ theme }) => theme.whitecolor};
 `;
-
 const StyledColumn = styled.div`
   color: ${({ primary }) => (primary ? "white" : "black")};
+`;
+const StyledHeader = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const StyledIcon = styled.span`
+  color: ${({ theme }) => theme.primarycolor};
+  cursor: pointer;
 `;
 
 const DataExpenses = ({ newData, expCategoryList, expGraphTable }) => {
   const { account } = useSelector((store) => ({
     account: store.analysis.account,
   }));
-
+  const [showBtn, setShowBtn] = useState(false);
+  const showEditButtons = () => {
+    setShowBtn(!showBtn);
+  };
   return (
     <>
       {newData && account.type !== "Wydatek" && (
@@ -106,7 +119,13 @@ const DataExpenses = ({ newData, expCategoryList, expGraphTable }) => {
         )}
       {newData && account.type === "Wydatek" && (
         <StyledWrapper>
-          <HeaderTitle>Lista wydatków</HeaderTitle>
+          <StyledHeader>
+            <HeaderTitle>Lista wydatków</HeaderTitle>
+            <StyledIcon>
+              <FontAwesomeIcon icon={faPencilAlt} />
+            </StyledIcon>
+          </StyledHeader>
+
           <StyledGridHeader>
             <StyledColumn primary> Data </StyledColumn>
             <StyledColumn primary> Tytuł </StyledColumn>

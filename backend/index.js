@@ -11,6 +11,7 @@ const passport = require("passport");
 var session = require("express-session");
 const accounts = require("./middleware/accounts");
 const expenses = require("./middleware/expenses");
+const accountsHelpers = require("./middleware/accountsHelpers");
 const compression = require("compression");
 
 const ENV = process.env.NODE_ENV;
@@ -91,6 +92,7 @@ app.get("/user/dashboard", authorization, async (req, res) => {
 });
 app.use("/", accounts);
 app.use("/", expenses);
+app.use("/", accountsHelpers);
 
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));

@@ -22,6 +22,28 @@ body{
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     color: black;
+
+}
+*::-webkit-scrollbar {
+  width: 10px;
+background-color: #05273B;
+
+}
+ 
+*::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #05273B; 
+  border-radius: 10px;
+
+}
+ 
+*::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 10px;
+  outline: 1px solid #05273B;
+
+  &:hover{
+ 
+  }
 }
 `;
 

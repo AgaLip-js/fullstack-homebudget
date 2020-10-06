@@ -11,11 +11,10 @@ const StyledWalletNavbar = styled.div`
   background: ${({ theme }) => theme.primarycolor};
   left: 0;
   padding: 20px;
+  overflow-y: auto;
 `;
 
 const AnalysisSidebar = ({
-  newAccounts,
-  newExpensesCategory,
   selectCategoryObj,
   selectExpensesObj,
   setSelectWallet,
@@ -25,6 +24,7 @@ const AnalysisSidebar = ({
   sumAllExp,
   setActiveBar,
   activeBar,
+  setActive,
 }) => {
   const dispatch = useDispatch();
 
@@ -32,12 +32,14 @@ const AnalysisSidebar = ({
     dispatch(selectAccount(account));
     selectCategoryObj(account, accounts);
     setActiveBar(account.category);
+    setActive(-1);
   };
 
   const selectExp = (account, expenses) => {
     dispatch(selectAccount(account));
     selectExpensesObj(account, expenses);
     setActiveBar(account.category);
+    setActive(-1);
   };
 
   return (
@@ -45,20 +47,17 @@ const AnalysisSidebar = ({
       <AccountsList
         selectAcc={selectAcc}
         activeBar={activeBar}
-        newAccounts={newAccounts}
         all={all}
         sumAll={sumAll}
         setActiveBar={setActiveBar}
         title="Konta"
         allExp={allExp}
-        newExpensesCategory={newExpensesCategory}
         sumAllExp={sumAllExp}
         setSelectWallet={setSelectWallet}
       />
       <AccountsList
         title="Kategorie wydatków"
         allExp={allExp}
-        newExpensesCategory={newExpensesCategory}
         sumAllExp={sumAllExp}
         selectExp={selectExp}
         selectAcc={selectAcc}

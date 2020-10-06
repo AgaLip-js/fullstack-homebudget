@@ -69,7 +69,6 @@ export const addNewAccount = (newAccount) => (dispatch) => {
   axios
     .post("/accounts", newAcc)
     .then(({ data }) => {
-      console.log(data);
       dispatch({
         type: ADD_ACCOUNT,
         payload: {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserPageTemplate from "../templates/UserPageTemplate";
 import AnalysisSidebar from "../components/AnalysisSidebar/AnalysisSidebar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import MiniModal from "../components/MiniModal/MiniModal";
 
@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import DataExpenses from "../components/DataExpenses/DataExpenses";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import OptionWrapper from "../components/atoms/OptionWrapper";
+import { getSumGroupCategory } from "../redux/actions/aggregateFunctions";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -79,59 +80,27 @@ const StyledOptionWrapper = styled.div`
 `;
 
 const Analysis = () => {
-  const { accounts, expenses, account, open } = useSelector(({ analysis }) => ({
-    accounts: analysis.accounts,
-    expenses: analysis.expenses,
-    account: analysis.account,
-    open: analysis.open,
+  const { accounts, expenses, account, open, select } = useSelector(
+    ({ analysis }) => ({
+      accounts: analysis.accounts,
+      expenses: analysis.expenses,
+      account: analysis.account,
+      open: analysis.open,
+      select: analysis.select,
+    })
+  );
+  const { userID, sumExpGroupCategory } = useSelector((store) => ({
+    sumExpGroupCategory: store.aggregate.sumExpGroupCategory,
+    userID: store.auth.user.id,
   }));
 
   const [active, setActive] = useState(-1);
   const [selectWallet, setSelectWallet] = useState("");
-  let newExpensesCategory = [];
-  let newExpensesGroupCategory = [];
-  let newAcc = [];
-
-  accounts.forEach(function (a) {
-    if (!this[a.category]) {
-      this[a.category] = {
-        category: a.category,
-        quantity: 0,
-        id: uuidv4(),
-        type: a.type,
-      };
-      newAcc.push(this[a.category]);
-    }
-    this[a.category].quantity += a.quantity;
-  }, Object.create(null));
-
-  expenses.forEach(function (a) {
-    if (!this[a.category]) {
-      this[a.category] = {
-        category: a.category,
-        quantity: 0,
-        type: "Wydatek",
-        id: uuidv4(),
-      };
-      newExpensesCategory.push(this[a.category]);
-    }
-    if (!this[a.groupcategory]) {
-      this[a.groupcategory] = {
-        category: a.category,
-        groupcategory: a.groupcategory,
-        quantity: 0,
-        type: "Wydatek",
-        id: uuidv4(),
-      };
-      newExpensesGroupCategory.push(this[a.groupcategory]);
-    }
-    this[a.category].quantity += a.quantity;
-    this[a.groupcategory].quantity += a.quantity;
-  }, Object.create(null));
+  const dispatch = useDispatch();
 
   const [newData, setnewData] = useState(expenses);
 
-  const expCategoryList = newExpensesGroupCategory.filter((exp) => {
+  const expCategoryList = sumExpGroupCategory.filter((exp) => {
     if (exp.category === account.category) {
       return exp;
     }
@@ -150,6 +119,7 @@ const Analysis = () => {
     setActive(acc.id);
     setnewData(dataList);
   };
+
   newData.forEach(function (a) {
     if (!this[a.groupcategory]) {
       this[a.groupcategory] = {
@@ -167,7 +137,10 @@ const Analysis = () => {
 
   const selectCategoryObj = (account, accounts) => {
     const accArray = accounts.filter((acc) => {
-      if (acc.category === account.category) {
+      if (
+        acc.category === account.category ||
+        account.category === "Wszystkie konta"
+      ) {
         return acc;
       }
       return null;
@@ -179,19 +152,21 @@ const Analysis = () => {
 
     const accountIds = accArray.map((e) => e.id);
     if (accountIds.length !== 0) {
-      console.log(accountIds);
       const alldata = expenses.filter((e) => accountIds.includes(e.idaccount));
       setnewData(alldata);
     } else if (account.title === "Wszystkie") {
       setnewData(expenses);
     } else {
-      setnewData(newExpensesGroupCategory);
+      setnewData(sumExpGroupCategory);
     }
   };
 
   const selectExpensesObj = (account, expenses) => {
     const accArray = expenses.filter((acc) => {
-      if (acc.category === account.category) {
+      if (
+        acc.category === account.category ||
+        account.category === "Wszystkie wydatki"
+      ) {
         return acc;
       }
       return null;
@@ -201,15 +176,13 @@ const Analysis = () => {
     const accountIds = accArray.map((e) => e.idaccount);
     if (accountIds.length !== 0) {
       const alldata = accounts.filter((e) => accountIds.includes(e.id));
-      setAccCatObj(alldata);
+      if (alldata && alldata.length) setAccCatObj(alldata);
     }
   };
   const sumValues = (obj) => Object.values(obj).reduce((a, b) => a + b);
 
   const sumAll =
-    accounts.length === 0
-      ? 0
-      : sumValues(accounts.map((account) => account.quantity));
+    accounts.length === 0 ? 0 : sumValues(accounts.map((acc) => acc.quantity));
 
   const sumAllExp =
     expenses.length === 0 ? 0 : sumValues(expenses.map((exp) => exp.quantity));
@@ -228,44 +201,28 @@ const Analysis = () => {
     title: "Wszystkie",
   };
   const [activeBar, setActiveBar] = useState(all.category);
-  console.log(account);
-  console.log(accCatObj);
 
+  useEffect(() => {
+    if (userID) {
+      dispatch(getSumGroupCategory(userID));
+    }
+    if (account && account.type !== "Wydatek") {
+      console.log("CATEGORY");
+      selectCategoryObj(account, accounts);
+    }
+    if (account && account.type === "Wydatek") {
+      console.log("EXPENSEs");
+      selectExpensesObj(account, expenses);
+    }
+  }, [expenses, accounts, account]);
   useEffect(() => {
     setActive(-1);
   }, [account]);
-  useEffect(() => {
-    const accArray = accounts.filter((acc) => {
-      if (acc.category === account.category) {
-        return acc;
-      }
-      return null;
-    });
-    setAccCatObj(accArray);
-    if (accArray.length === 0) {
-      setAccCatObj(accounts);
-    }
-    const expArray = expenses.filter((exp) => {
-      if (exp.idaccount === selectWallet.id) {
-        return exp;
-      }
-      return null;
-    });
-
-    setnewData(expArray);
-    if (expArray.length === 0) {
-      setnewData(expenses);
-    }
-    console.log(selectWallet);
-    console.log(newData);
-  }, [accounts, expenses]);
 
   return (
     <UserPageTemplate pageContext="analysis">
       <StyledWrapper>
         <AnalysisSidebar
-          newAccounts={newAcc}
-          newExpensesCategory={newExpensesCategory}
           selectCategoryObj={selectCategoryObj}
           selectExpensesObj={selectExpensesObj}
           setSelectWallet={setSelectWallet}
@@ -276,13 +233,14 @@ const Analysis = () => {
           sumAllExp={sumAllExp}
           setActiveBar={setActiveBar}
           activeBar={activeBar}
+          setActive={setActive}
         />
 
         <StyledAccountList>
           <StyledAccount>
             <StyledAccountTitle>Nazwa konta</StyledAccountTitle>
             <StyledAccountSelect>
-              {accCatObj.length > 0 && (
+              {accCatObj.length && (
                 <>
                   {accCatObj.map((obj) => {
                     return (
@@ -296,15 +254,17 @@ const Analysis = () => {
                         {selectWallet !== "" &&
                           active === obj.id &&
                           account.type !== "Wydatek" && (
-                            <StyledOptionWrapper>
-                              <OptionWrapper
-                                title="Edytuj konto"
-                                icon={faPencilAlt}
-                                walletCategory={selectWallet.category}
-                                category="Konto"
-                                secondary
-                              />
-                            </StyledOptionWrapper>
+                            <React.Fragment key={obj.id}>
+                              <StyledOptionWrapper>
+                                <OptionWrapper
+                                  title="Edytuj konto"
+                                  icon={faPencilAlt}
+                                  walletCategory={selectWallet.category}
+                                  category="Konto"
+                                  secondary
+                                />
+                              </StyledOptionWrapper>
+                            </React.Fragment>
                           )}
                       </React.Fragment>
                     );
@@ -321,9 +281,7 @@ const Analysis = () => {
           />
           {open && (
             <MiniModal
-              newAccounts={newAcc}
-              newExpensesCategory={newExpensesCategory}
-              newExpensesGroupCategory={newExpensesGroupCategory}
+              newExpensesGroupCategory={sumExpGroupCategory}
               selectWallet={selectWallet}
               setSelectWallet={setSelectWallet}
             />

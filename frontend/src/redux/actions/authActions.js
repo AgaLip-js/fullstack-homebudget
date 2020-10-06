@@ -8,7 +8,7 @@ import {
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
-  CLEAR_STATE
+  CLEAR_STATE,
 } from "./";
 import { returnErrors } from "./errorActions";
 import setAuthToken from "../utils/setAuthToken";
@@ -40,16 +40,15 @@ export const register = (userData) => (dispatch) => {
   axios
     .post("/user/register", userData)
     .then((res) => {
-      console.log(res);
       if (res.data === "User already exist!") {
-        toast.error("Użytkownik już istnieje!")
+        toast.error("Użytkownik już istnieje!");
       } else {
         dispatch({
           type: REGISTER_SUCCESS,
           payload: res.data,
         });
         history.push("/login");
-        toast.success("Pomyślnie zarejestrowano")
+        toast.success("Pomyślnie zarejestrowano");
       }
     })
     .catch((err) => {
@@ -59,7 +58,7 @@ export const register = (userData) => (dispatch) => {
       dispatch({
         type: REGISTER_FAIL,
       });
-      toast.error("Błąd przy rejestracji")
+      toast.error("Błąd przy rejestracji");
     });
 };
 
@@ -71,17 +70,17 @@ export const login = (user) => (dispatch) => {
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
-      
-      toast.success("Pomyślnie zalogowano")
+
+      toast.success("Pomyślnie zalogowano");
     })
     .catch((err) => {
       dispatch(
-        returnErrors(err.response.data, err.response.status, "LOGIN_FAIL"),
+        returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
       );
       dispatch({
         type: LOGIN_FAIL,
       });
-      toast.error("Nieprawidłowy email lub hasło")
+      toast.error("Nieprawidłowy email lub hasło");
     });
 };
 

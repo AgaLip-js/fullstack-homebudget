@@ -37,12 +37,9 @@ const StyledQuantity = styled(StyledParagraph)``;
 const AccountsList = ({
   selectAcc,
   activeBar,
-  newAccounts,
-  // sumAll,
   all,
   title,
   allExp,
-  newExpensesCategory,
   sumAllExp,
   selectExp,
   setSelectWallet,
@@ -88,7 +85,7 @@ const AccountsList = ({
               {sumAccounts.map((acc) => {
                 return (
                   <StyledFirstSection
-                    key={acc.id}
+                    key={acc.category}
                     onClick={() => {
                       selectAcc(acc, accounts);
                     }}
@@ -114,7 +111,7 @@ const AccountsList = ({
         <>
           <StyledFirstSection
             onClick={() => {
-              selectAcc(allExp, accounts);
+              selectExp(allExp, expenses);
             }}
             active={activeBar === allExp.category}
           >

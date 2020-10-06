@@ -109,8 +109,6 @@ const StyledRequiredText = styled.p`
 `;
 
 const MiniModal = ({
-  newAccounts,
-  newExpensesCategory,
   newExpensesGroupCategory,
   selectWallet,
   setSelectWallet,
@@ -119,13 +117,29 @@ const MiniModal = ({
   const dispatch = useDispatch();
 
   const [required, setRequired] = useState(false);
-  const { category, accounts, title, openWM, auth } = useSelector((store) => ({
+  const {
+    category,
+    accounts,
+    title,
+    openWM,
+    auth,
+    sumAccounts,
+    sumExpenses,
+  } = useSelector((store) => ({
     category: store.analysis.category,
     title: store.analysis.title,
     accounts: store.analysis.accounts,
     openWM: store.analysis.openWM,
     auth: store.auth,
+    sumAccounts: store.aggregate.sumAccounts,
+    sumExpenses: store.aggregate.sumExpenses,
   }));
+
+  const checkCategory = (category) => {
+    return sumAccounts.find((e) => e.category === category);
+  };
+
+  const accountsType = ["Środki bieżące", "Oszczędności"];
 
   const submitAcc = (newAcc) => {
     if (
@@ -135,17 +149,14 @@ const MiniModal = ({
       newAcc.type === "" ||
       newAcc.type === "Wybierz"
     ) {
-      console.log(newAcc);
       setRequired(true);
       return false;
     } else {
-      console.log(newAcc.category);
       newAcc.quantity = parseInt(newAcc.quantity);
+
       if (selectWallet) {
-        console.log(newAcc);
         dispatch(editAccount(newAcc.id, newAcc));
       } else {
-        console.log(newAcc);
         dispatch(addNewAccount(newAcc));
       }
       setSelectWallet(newWallet);
@@ -227,12 +238,17 @@ const MiniModal = ({
   };
   const [newWallet, setNewWallet] = useState(newAccount);
   const [newExp, setNewExp] = useState(newExpense);
+  const [accountType, setAccountType] = useState(accountsType);
 
   const handleInputWalletChange = (e) => {
     setNewWallet({
       ...newWallet,
       [e.target.name]: e.target.value,
     });
+
+    if (checkCategory(e.target.value)) {
+      setAccountType(checkCategory(e.target.value).type);
+    }
   };
   const handleInputExpChange = (e) => {
     setNewExp({
@@ -263,18 +279,34 @@ const MiniModal = ({
             {required && newWallet.title === "" && (
               <StyledRequiredText>Wpisz nazwę</StyledRequiredText>
             )}
-            <Input
-              secondary
-              className="required"
-              type="text"
-              required="required"
-              title="Kategoria"
-              name="category"
-              list="accountsCategory"
-              newAccounts={newAccounts}
-              value={newWallet.category}
-              onChange={handleInputWalletChange}
-            />
+            {newWallet.category !== "" && selectWallet.category ? (
+              <>
+                <StyledSelect
+                  onChange={handleInputWalletChange}
+                  name="category"
+                >
+                  <StyledOption value={newWallet.category}>
+                    {newWallet.category}
+                  </StyledOption>
+                </StyledSelect>
+                <StyledLabel>Kategoria</StyledLabel>
+              </>
+            ) : (
+              <>
+                <Input
+                  secondary
+                  className="required"
+                  type="text"
+                  required="required"
+                  title="Kategoria"
+                  name="category"
+                  list="accountsCategory"
+                  newAccounts={sumAccounts}
+                  value={newWallet.category}
+                  onChange={handleInputWalletChange}
+                />
+              </>
+            )}
             {required && newWallet.category === "" && (
               <StyledRequiredText>
                 Wpisz lub wybierz kategorię
@@ -293,7 +325,9 @@ const MiniModal = ({
             {required && newWallet.quantity === "" && (
               <StyledRequiredText>Podaj ilość</StyledRequiredText>
             )}
-            {newWallet.type !== "" && newWallet.type !== "Wybierz" ? (
+            {newWallet.type !== "" &&
+            newWallet.type !== "Wybierz" &&
+            selectWallet.type ? (
               <>
                 <StyledSelect onChange={handleInputWalletChange} name="type">
                   <StyledOption value={newWallet.type}>
@@ -306,10 +340,19 @@ const MiniModal = ({
               <>
                 <StyledSelect onChange={handleInputWalletChange} name="type">
                   <StyledOption value="Wybierz">Wybierz typ konta</StyledOption>
-                  <StyledOption value="Środki bieżące">
-                    Środki bieżące
-                  </StyledOption>
-                  <StyledOption value="Oszczędności">Oszczędności</StyledOption>
+                  <>
+                    {Array.isArray(accountType) ? (
+                      <>
+                        {accountType.map((at) => (
+                          <StyledOption value={at}>{at}</StyledOption>
+                        ))}
+                      </>
+                    ) : (
+                      <StyledOption value={accountType}>
+                        {accountType}
+                      </StyledOption>
+                    )}
+                  </>
                 </StyledSelect>
                 <StyledLabel>Typ konta</StyledLabel>
 
@@ -358,7 +401,7 @@ const MiniModal = ({
               required="required"
               className="required"
               type="text"
-              newExpenses={newExpensesCategory}
+              newExpenses={sumExpenses}
               secondary
               title="Kategoria wydatku"
               name="category"

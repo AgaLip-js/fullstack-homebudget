@@ -1,7 +1,12 @@
-import { GET_SUM_ACCOUNTS, GET_SUM_EXPENSES } from "../actions";
+import {
+  GET_SUM_ACCOUNTS,
+  GET_SUM_EXPENSES,
+  GET_SUM_GROUP_CATEGORY,
+} from "../actions";
 const initialState = {
-  sumAccounts: null,
-  sumExpenses: null,
+  sumAccounts: [],
+  sumExpenses: [],
+  sumExpGroupCategory: [],
 };
 const aggregateReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -15,6 +20,12 @@ const aggregateReducer = (state = initialState, action) => {
         ...state,
         sumExpenses: action.payload.sumExpenses,
       };
+    case GET_SUM_GROUP_CATEGORY:
+      return {
+        ...state,
+        sumExpGroupCategory: action.payload.sumExpGroupCategory,
+      };
+
     default:
       return state;
   }

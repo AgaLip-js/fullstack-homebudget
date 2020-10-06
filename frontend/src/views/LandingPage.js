@@ -84,7 +84,6 @@ const LandingPage = () => {
   if (auth.isAuthenticated) {
     return <Redirect to="/dashboard/summary" />;
   }
-  console.log("Landing");
   return (
     <StyledWrapper>
       <Navbar aos="fade-down" />

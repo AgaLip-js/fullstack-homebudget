@@ -38,7 +38,6 @@ function App() {
     Aos.init({ duration: 1500, once: true });
   }, [auth.token, dispatch]);
 
-  console.log("App");
   return (
     <>
       <GlobalStyle />
